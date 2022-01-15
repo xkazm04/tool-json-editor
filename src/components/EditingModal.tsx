@@ -1,12 +1,21 @@
 import React, { useState } from "react";
 import { Input } from "./Input";
 import { BsFillTrashFill, BsFillXCircleFill } from "react-icons/bs";
+import { BuddyBuilderType } from "../types";
 
 interface OwnProps {
   closeModal: () => void;
+  addUseCase: (
+    value: string,
+    useCaseType: BuddyBuilderType["useCaseType"],
+    useCaseOptions: { value: string }[]
+  ) => void;
 }
 
-export const EditingModal = ({ closeModal }: OwnProps): JSX.Element => {
+export const EditingModal = ({
+  closeModal,
+  addUseCase,
+}: OwnProps): JSX.Element => {
   const [labelValue, setLabelValue] = useState("");
   const [inputs, setInputs] = useState([{ value: "" }]);
 
@@ -53,9 +62,17 @@ export const EditingModal = ({ closeModal }: OwnProps): JSX.Element => {
           </div>
         );
       })}
-      <button className='btn' onClick={handleInputAdd}>
-        Add input
-      </button>
+      <div className='mt-4'>
+        <button className='btn' onClick={handleInputAdd}>
+          Add input
+        </button>
+        <button
+          className='btn ml-5'
+          onClick={() => addUseCase(labelValue, "input", inputs)}
+        >
+          Add use case
+        </button>
+      </div>
       <BsFillXCircleFill
         onClick={closeModal}
         className='absolute top-4 right-4 scale-150 cursor-pointer'
