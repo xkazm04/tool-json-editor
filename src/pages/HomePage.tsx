@@ -1,29 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { EditingModal } from "../components/EditingModal";
+import { UseCases } from "../components/UseCases";
+import { useBuddy } from "../providers/Buddy";
 import { BuddyBuilderType } from "../types";
-import { createUseCase } from "../utils/createUseCase";
 
 export const HomePage = () => {
   const [showModal, setShowModal] = useState(false);
-  const [buddy, setBuddy] = useState<BuddyBuilderType | {}>({});
+  const [inputs, setInputs] = useState<BuddyBuilderType[] | []>([]);
+  const buddy = useBuddy()?.buddy;
 
   const closeModal = () => setShowModal(false);
 
-  const addUseCase = (
-    value: string,
-    useCaseType: BuddyBuilderType["useCaseType"],
-    useCaseOptions: { value: string }[]
-  ) => {
-    const useCase = createUseCase(useCaseType, value, undefined);
-    setBuddy(buddy);
+  const updateInputs = (inputs: BuddyBuilderType[]) => {
+    if (buddy && inputs.length === 0) {
+      setInputs([buddy]);
+    } else {
+      const updatedInputs = inputs.map((input, index) => {
+        let matchedInput = null;
+        const current = buddy;
+        const queue = [];
+        queue.push(current);
 
-    const options = useCaseOptions.map((option) =>
-      createUseCase(useCaseType, option.value)
-    );
-    useCase.children = options;
-
-    setBuddy(useCase);
+        while (queue.length > 0) {
+          const last = queue.shift();
+          if (last?.id === input.id) {
+            matchedInput = last;
+          } else {
+            last?.children.forEach((child) => queue.push(child));
+          }
+        }
+        return matchedInput;
+      });
+      const res = updatedInputs;
+      setInputs(res as BuddyBuilderType[]);
+    }
   };
+
+  useEffect(() => {
+    if (!buddy) return;
+    updateInputs(inputs);
+  }, [buddy]);
 
   return (
     <div className='grid grid-cols-[50%_50%]'>
@@ -31,11 +47,10 @@ export const HomePage = () => {
         <button className='btn' onClick={() => setShowModal(true)}>
           Add use case
         </button>
-        {showModal && (
-          <EditingModal addUseCase={addUseCase} closeModal={closeModal} />
-        )}
+        {showModal && <EditingModal closeModal={closeModal} />}
+        <UseCases inputs={inputs} />
       </div>
-      <pre>{JSON.stringify(buddy, null, 2)}</pre>
+      <pre className='p-3'>{buddy && JSON.stringify(buddy, null, 2)}</pre>
     </div>
   );
 };

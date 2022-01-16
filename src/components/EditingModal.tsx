@@ -1,23 +1,16 @@
 import React, { useState } from "react";
 import { Input } from "./Input";
 import { BsFillTrashFill, BsFillXCircleFill } from "react-icons/bs";
-import { BuddyBuilderType } from "../types";
+import { useBuddy } from "../providers/Buddy";
 
 interface OwnProps {
   closeModal: () => void;
-  addUseCase: (
-    value: string,
-    useCaseType: BuddyBuilderType["useCaseType"],
-    useCaseOptions: { value: string }[]
-  ) => void;
 }
 
-export const EditingModal = ({
-  closeModal,
-  addUseCase,
-}: OwnProps): JSX.Element => {
+export const EditingModal = ({ closeModal }: OwnProps): JSX.Element => {
   const [labelValue, setLabelValue] = useState("");
   const [inputs, setInputs] = useState([{ value: "" }]);
+  const buddy = useBuddy();
 
   const handleInputChange = (
     e: React.FormEvent<HTMLInputElement>,
@@ -35,6 +28,11 @@ export const EditingModal = ({
 
   const handleInputAdd = () => {
     setInputs((prev) => [...prev, { value: "" }]);
+  };
+
+  const addFirstUseCase = () => {
+    buddy?.addRootUseCase(labelValue, "input", inputs);
+    closeModal();
   };
 
   return (
@@ -66,10 +64,7 @@ export const EditingModal = ({
         <button className='btn' onClick={handleInputAdd}>
           Add input
         </button>
-        <button
-          className='btn ml-5'
-          onClick={() => addUseCase(labelValue, "input", inputs)}
-        >
+        <button className='btn ml-5' onClick={() => addFirstUseCase()}>
           Add use case
         </button>
       </div>
