@@ -1,25 +1,14 @@
 import React from "react";
-import { BuddyBuilderType } from "../types";
+import { useBuddy } from "../providers/Buddy";
 import { UseCaseCard } from "./UseCaseCard";
 
-interface OwnProps {
-  inputs: BuddyBuilderType[];
-  
-}
-
-export const UseCases = ({
-  inputs,
-}: OwnProps): JSX.Element => {
+export const UseCases = (): JSX.Element => {
+  const buddy = useBuddy();
   return (
     <div>
-      {inputs.length > 0 &&
-        inputs.map((input, index) => {
-          return (
-            <UseCaseCard
-              key={index}
-              input={input}
-            />
-          );
+      {buddy?.inputs &&
+        buddy.inputs.map((input, index) => {
+          return <UseCaseCard key={index} inputIndex={index} input={input} />;
         })}
     </div>
   );

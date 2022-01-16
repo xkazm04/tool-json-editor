@@ -15,8 +15,17 @@ export const UseCaseEditSection = ({
 }: OwnProps): JSX.Element => {
   const [labelValue, setLabelValue] = useState<string>("");
   const labelInputRef = useRef<HTMLInputElement | null>(null);
+  const newInputRef = useRef<HTMLInputElement | null>(null);
   const [newInput, setNewInput] = useState({ visible: false, value: "" });
   const buddy = useBuddy();
+
+  useEffect(() => {
+    newInputRef.current?.focus();
+  }, [newInput]);
+
+  useEffect(() => {
+    labelInputRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     setLabelValue(label);
@@ -37,26 +46,28 @@ export const UseCaseEditSection = ({
         return <Input labelText={label} value={value} />;
       })}
       {newInput.visible && (
-        <div className='flex items-center justify-between'>
-          <Input
-            value={newInput.value}
-            onChange={(e) =>
-              setNewInput((prev) => ({
-                ...prev,
-                value: (e.target as HTMLInputElement).value,
-              }))
-            }
-          />
-          <button
-            className='btn self-end my-2'
-            onClick={() => {
-              buddy?.addUseCaseOption("input", newInput.value, undefined, id);
-              setNewInput((prev) => ({ ...prev, value: "", visible: false }));
-            }}
-          >
-            Confirm
-          </button>
-        </div>
+        <form
+          onSubmit={() => {
+            buddy?.addUseCaseOption("input", newInput.value, undefined, id);
+            setNewInput((prev) => ({ ...prev, value: "", visible: false }));
+          }}
+        >
+          <div className='flex items-center justify-between'>
+            <Input
+              ref={newInputRef}
+              value={newInput.value}
+              onChange={(e) =>
+                setNewInput((prev) => ({
+                  ...prev,
+                  value: (e.target as HTMLInputElement).value,
+                }))
+              }
+            />
+            <button type='submit' className='btn self-end my-2'>
+              Confirm
+            </button>
+          </div>
+        </form>
       )}
       <div>
         <button
