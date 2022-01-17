@@ -9,7 +9,8 @@ interface BuddyContextType {
     useCaseType: BuddyBuilderType["useCaseType"],
     optionValue: string,
     label?: string,
-    useCaseID?: string
+    useCaseID?: string,
+    onFinish?: () => void
   ) => void;
   addRootUseCase: (
     value: string,
@@ -92,7 +93,8 @@ export const useBuddyContext = (): BuddyContextType => {
       return;
     }
     const useCase = findUseCase(id);
-    if (!useCase) return;
+
+    if (!useCase || useCase.useCaseType === "code snippet") return;
     setInputs((prev) => [...prev, useCase]);
   };
 
@@ -157,7 +159,8 @@ export const useBuddyContext = (): BuddyContextType => {
     useCaseType: BuddyBuilderType["useCaseType"],
     optionValue: string,
     label: string = "default",
-    useCaseID?: string
+    useCaseID?: string,
+    onFinish?: () => void
   ) => {
     const traverseBuddy = (buddy: BuddyBuilderType): BuddyBuilderType => {
       let current: any = buddy;
@@ -188,14 +191,14 @@ export const useBuddyContext = (): BuddyContextType => {
     };
     const updatedBuddy = traverseBuddy(buddy as BuddyBuilderType);
     setBuddy((prev) => ({ ...prev, ...updatedBuddy }));
+    onFinish && onFinish();
   };
-
+  console.log("buddy", buddy);
   useEffect(() => {
     if (!buddy) return;
     updateInputs(inputs);
   }, [buddy]);
 
-  
   return {
     buddy,
     addUseCaseOption,

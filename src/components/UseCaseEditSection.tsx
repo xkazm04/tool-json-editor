@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { BsFillXCircleFill } from "react-icons/bs";
 import { useBuddy } from "../providers/Buddy";
 import { BuddyBuilderType } from "../types";
+import { Editable } from "./Editable";
 import { Input } from "./Input";
+import { TextArea } from "./TextArea";
 
 interface OwnProps {
   input: BuddyBuilderType;
@@ -21,37 +23,41 @@ export const UseCaseEditSection = ({
   const newInputRef = useRef<HTMLInputElement | null>(null);
   const [newInput, setNewInput] = useState({ visible: false, value: "" });
   const [options, setOptions] = useState<
-    { value: string; id: string; isEditing: boolean; label: string }[] | []
+    | {
+        value: string;
+        id: string;
+        label: string;
+        useCaseType: "input" | "code snippet";
+      }[]
+    | []
   >([]);
+  const [codeSnippet, setCodeSnippet] = useState({ visible: false, value: "" });
+
   const buddy = useBuddy();
 
-  const setInputEditing = (id: string) => {
-    const withEditedOption = [...options];
-    const updatedOptions = withEditedOption.map((option) =>
-      option.id === id ? { ...option, isEditing: true } : option
-    );
-    setOptions(updatedOptions);
-  };
-
   const handleOptionChange = (
-    e: React.FormEvent<HTMLInputElement>,
+    e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     id: string
   ) => {
-    const withChangedOption = options.map((option) =>
-      option.id === id
-        ? { ...option, value: (e.target as HTMLInputElement).value }
-        : option
-    );
+    const withChangedOption = options.map((option) => {
+      return option.id === id
+        ? {
+            ...option,
+            value: (e.target as HTMLInputElement | HTMLTextAreaElement).value,
+          }
+        : option;
+    });
     setOptions(withChangedOption);
   };
 
   useEffect(() => {
     setOptions(
-      children.map(({ id, value, label }) => ({
+      children.map(({ id, value, label, useCaseType }) => ({
         value,
         id,
         isEditing: false,
         label,
+        useCaseType,
       }))
     );
   }, [children]);
@@ -71,7 +77,15 @@ export const UseCaseEditSection = ({
   return (
     <div className='w-full min-h-[300px] bg-red-400 rounded-lg my-5 p-5 relative'>
       <div className='grid grid-cols-[70%_20%] gap-5'>
-        {label.isEditing ? (
+        <Editable
+          useCaseType={"input"}
+          text={label.value}
+          label='Label for group of inputs'
+          onUseCaseSave={() => {
+            buddy?.editUseCaseValue("label", id, label.value);
+            setLabel((prev) => ({ ...prev, isEditing: false }));
+          }}
+        >
           <Input
             ref={labelInputRef}
             labelText='Label for group of inputs'
@@ -83,85 +97,38 @@ export const UseCaseEditSection = ({
               }))
             }
           />
-        ) : (
-          <div className='my-2'>
-            <label className='block text-sm text-white'>
-              Label for group of inputs
-            </label>
-            <span className=''>{label.value}</span>
-          </div>
-        )}
-        {label.isEditing ? (
-          <button
-            className='btn self-end '
-            onClick={() => {
-              buddy?.editUseCaseValue("label", id, label.value);
-              setLabel((prev) => ({ ...prev, isEditing: false }));
-            }}
-          >
-            Save
-          </button>
-        ) : (
-          <button
-            className='btn'
-            onClick={() => setLabel((prev) => ({ ...prev, isEditing: true }))}
-          >
-            Edit
-          </button>
-        )}
+        </Editable>
       </div>
       <div className='divider'></div>
       {options.length > 0 &&
-        options.map(({ label, value, id, isEditing }, index) => {
+        options.map(({ label, value, id, useCaseType }, index) => {
           return (
             <div
               key={index}
-              className='grid grid-cols-[70%_20%] p-2 bg-red-300 my-2 rounded-xl'
+              className='grid grid-cols-[70%_20%] p-2 gap-x-10 bg-red-300 my-2 rounded-xl'
             >
-              {isEditing ? (
-                <>
+              <Editable
+                useCaseType={useCaseType}
+                onUseCaseSave={() =>
+                  buddy?.editUseCaseValue("value", id, options[index]["value"])
+                }
+                label={label}
+                text={value}
+                onUseCaseDelete={() => buddy?.deleteUseCase(id, buddy?.buddy)}
+              >
+                {useCaseType === "input" ? (
                   <Input
                     labelText={label}
                     value={value}
                     onChange={(e) => handleOptionChange(e, id)}
                   />
-                  <div className='justify-self-end self-end'>
-                    <button
-                      onClick={() =>
-                        buddy?.editUseCaseValue(
-                          "value",
-                          id,
-                          options[index]["value"]
-                        )
-                      }
-                      className='btn justify-self-end self-end'
-                    >
-                      Save
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className=''>
-                    <label className='block text-sm text-white'>{label}</label>
-                    <p className='block'>{value}</p>
-                  </div>
-                  <div className='flex justify-between '>
-                    <button
-                      onClick={() => setInputEditing(id)}
-                      className='btn justify-self-end self-end'
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className='btn justify-self-end self-end'
-                      onClick={() => buddy?.deleteUseCase(id, buddy?.buddy)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </>
-              )}
+                ) : (
+                  <TextArea
+                    value={value}
+                    onChange={(e) => handleOptionChange(e, id)}
+                  />
+                )}
+              </Editable>
             </div>
           );
         })}
@@ -183,19 +150,93 @@ export const UseCaseEditSection = ({
                 }))
               }
             />
-            <button type='submit' className='btn self-end my-2'>
-              Confirm
-            </button>
+            <div className='self-end'>
+              <button type='submit' className='btn '>
+                Confirm
+              </button>
+              <button
+                onClick={() =>
+                  setNewInput((prev) => ({
+                    ...prev,
+                    value: "",
+                    visible: false,
+                  }))
+                }
+                className='btn ml-4'
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </form>
       )}
+      {codeSnippet.visible && (
+        <div className='grid grid-cols-[70%_20%] gap-x-10'>
+          <TextArea
+            value={codeSnippet.value}
+            onChange={(e) =>
+              setCodeSnippet((prev) => ({
+                ...prev,
+                value: (e.target as HTMLTextAreaElement).value,
+              }))
+            }
+          />
+          <div className='justify-self-end self-end'>
+            <button
+              onClick={() => {
+                buddy?.addUseCaseOption(
+                  "code snippet",
+                  codeSnippet.value,
+                  undefined,
+                  id,
+                  () =>
+                    setCodeSnippet((prev) => ({
+                      ...prev,
+                      visible: false,
+                      value: "",
+                    }))
+                );
+              }}
+              className='btn w-full '
+            >
+              Save
+            </button>
+            <button
+              onClick={() =>
+                setCodeSnippet((prev) => ({
+                  ...prev,
+                  visible: false,
+                  value: "",
+                }))
+              }
+              className='btn w-full mt-2'
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
       <div>
-        <button
-          className='btn my-3'
-          onClick={() => setNewInput((prev) => ({ ...prev, visible: true }))}
-        >
-          Add option
-        </button>
+        {(options.length > 0 && options[0]["useCaseType"] === "code snippet") ||
+        codeSnippet.visible ? null : (
+          <button
+            className='btn my-3'
+            onClick={() => setNewInput((prev) => ({ ...prev, visible: true }))}
+          >
+            Add option
+          </button>
+        )}
+
+        {options?.length === 0 && !codeSnippet.visible && (
+          <button
+            className='btn my-3 ml-5'
+            onClick={() =>
+              setCodeSnippet((prev) => ({ ...prev, visible: true }))
+            }
+          >
+            Add code snippet
+          </button>
+        )}
       </div>
       <BsFillXCircleFill
         onClick={closeEditSection}

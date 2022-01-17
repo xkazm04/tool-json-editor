@@ -3,5 +3,5 @@ export interface BuddyBuilderType {
   value: string;
   label: string;
   id: string;
-  children: BuddyBuilderType[];
+  children: BuddyBuilderType[] | [];
 }
