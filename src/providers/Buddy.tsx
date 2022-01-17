@@ -22,6 +22,7 @@ interface BuddyContextType {
     id: string,
     newValue: string
   ) => void;
+  deleteUseCase: (id: string, buddy: BuddyBuilderType | null) => void;
 }
 
 export const BuddyContext = React.createContext<BuddyContextType | null>(null);
@@ -29,6 +30,27 @@ export const BuddyContext = React.createContext<BuddyContextType | null>(null);
 export const useBuddyContext = (): BuddyContextType => {
   const [buddy, setBuddy] = useState<BuddyBuilderType | null>(null);
   const [inputs, setInputs] = useState<BuddyBuilderType[] | []>([]);
+
+  const deleteUseCase = (id: string, buddy: BuddyBuilderType | null) => {
+    const deleteCase = (buddy: BuddyBuilderType | null) => {
+      if (!id || !buddy) return;
+      const current: any = buddy;
+
+      for (let [key, value] of Object.entries(current)) {
+        if (typeof key === "string") {
+          current[key as keyof BuddyBuilderType] = value;
+        }
+        if (Array.isArray(value)) {
+          current[key] = (value as BuddyBuilderType["children"])
+            .filter((v) => v.id !== id)
+            .map((v) => deleteCase(v));
+        }
+      }
+      return current;
+    };
+    const withoutDeletedUseCase = deleteCase(buddy);
+    setBuddy((prev) => ({ ...prev, ...withoutDeletedUseCase }));
+  };
 
   const editUseCaseValue = (
     valueType: "value" | "label",
@@ -173,6 +195,7 @@ export const useBuddyContext = (): BuddyContextType => {
     updateInputs(inputs);
   }, [buddy]);
 
+  
   return {
     buddy,
     addUseCaseOption,
@@ -180,6 +203,7 @@ export const useBuddyContext = (): BuddyContextType => {
     inputs,
     selectOption,
     editUseCaseValue,
+    deleteUseCase,
   };
 };
 

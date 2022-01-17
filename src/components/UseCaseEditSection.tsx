@@ -114,7 +114,10 @@ export const UseCaseEditSection = ({
       {options.length > 0 &&
         options.map(({ label, value, id, isEditing }, index) => {
           return (
-            <div key={index} className='grid grid-cols-[70%_20%]'>
+            <div
+              key={index}
+              className='grid grid-cols-[70%_20%] p-2 bg-red-300 my-2 rounded-xl'
+            >
               {isEditing ? (
                 <>
                   <Input
@@ -122,31 +125,41 @@ export const UseCaseEditSection = ({
                     value={value}
                     onChange={(e) => handleOptionChange(e, id)}
                   />
-                  <button
-                    onClick={() =>
-                      buddy?.editUseCaseValue(
-                        "value",
-                        id,
-                        options[index]["value"]
-                      )
-                    }
-                    className='btn justify-self-end self-end'
-                  >
-                    Save
-                  </button>
+                  <div className='justify-self-end self-end'>
+                    <button
+                      onClick={() =>
+                        buddy?.editUseCaseValue(
+                          "value",
+                          id,
+                          options[index]["value"]
+                        )
+                      }
+                      className='btn justify-self-end self-end'
+                    >
+                      Save
+                    </button>
+                  </div>
                 </>
               ) : (
                 <>
-                  <div className='mt-4'>
+                  <div className=''>
                     <label className='block text-sm text-white'>{label}</label>
                     <p className='block'>{value}</p>
                   </div>
-                  <button
-                    onClick={() => setInputEditing(id)}
-                    className='btn justify-self-end self-end'
-                  >
-                    Edit
-                  </button>
+                  <div className='flex justify-between '>
+                    <button
+                      onClick={() => setInputEditing(id)}
+                      className='btn justify-self-end self-end'
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className='btn justify-self-end self-end'
+                      onClick={() => buddy?.deleteUseCase(id, buddy?.buddy)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </>
               )}
             </div>
