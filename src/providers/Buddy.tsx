@@ -4,6 +4,7 @@ import { createUseCase } from "../utils/createUseCase";
 
 interface BuddyContextType {
   buddy: BuddyBuilderType | null;
+  inputs: BuddyBuilderType[] | [];
   addUseCaseOption: (
     useCaseType: BuddyBuilderType["useCaseType"],
     optionValue: string,
@@ -15,8 +16,12 @@ interface BuddyContextType {
     useCaseType: BuddyBuilderType["useCaseType"],
     useCaseOptions: { value: string }[]
   ) => void;
-  inputs: BuddyBuilderType[] | [];
   selectOption: (id: string, selectIndex: number) => void;
+  editUseCaseValue: (
+    valueType: "value" | "label",
+    id: string,
+    newValue: string
+  ) => void;
 }
 
 export const BuddyContext = React.createContext<BuddyContextType | null>(null);
@@ -24,6 +29,33 @@ export const BuddyContext = React.createContext<BuddyContextType | null>(null);
 export const useBuddyContext = (): BuddyContextType => {
   const [buddy, setBuddy] = useState<BuddyBuilderType | null>(null);
   const [inputs, setInputs] = useState<BuddyBuilderType[] | []>([]);
+
+  const editUseCaseValue = (
+    valueType: "value" | "label",
+    id: string,
+    newValue: string
+  ) => {
+    const edit = (buddy: BuddyBuilderType | null) => {
+      if (!buddy) return;
+      const current: any = buddy;
+
+      for (let [key, value] of Object.entries(current)) {
+        if (typeof key === "string") {
+          if (current.id === id) {
+            current[valueType as any] = newValue.trim();
+          } else {
+            current[key as keyof BuddyBuilderType] = value;
+          }
+        }
+        if (Array.isArray(value)) {
+          current[key] = value.map((v) => edit(v));
+        }
+      }
+      return current;
+    };
+    const editedBuddy = edit(buddy);
+    setBuddy((prev) => ({ ...prev, ...editedBuddy }));
+  };
 
   const handlePreviousSelectChange = (selectIndex: number, id: string) => {
     const validInputs = inputs.slice(selectIndex, 1);
@@ -141,7 +173,14 @@ export const useBuddyContext = (): BuddyContextType => {
     updateInputs(inputs);
   }, [buddy]);
 
-  return { buddy, addUseCaseOption, addRootUseCase, inputs, selectOption };
+  return {
+    buddy,
+    addUseCaseOption,
+    addRootUseCase,
+    inputs,
+    selectOption,
+    editUseCaseValue,
+  };
 };
 
 export const useBuddy = (): BuddyContextType | null => {

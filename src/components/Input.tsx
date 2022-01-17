@@ -9,7 +9,7 @@ export const Input = React.forwardRef(
     ref: React.ForwardedRef<HTMLInputElement>
   ): JSX.Element => {
     return (
-      <div className='form-control my-2'>
+      <div className='form-control mt-2'>
         <label className='label'>
           <span className='label-text text-white'>{labelText}</span>
         </label>
