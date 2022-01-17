@@ -17,7 +17,7 @@ export const UseCaseCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
 
   return (
     <>
-      <div className='bg-cyan-300 rounded-lg p-5  grid grid-cols-[50%_50%] justify-center items-center my-5 w-full'>
+      <div className='max-w-screen-lg m-auto bg-cyan-300 rounded-lg p-5  grid grid-cols-[50%_50%] justify-center items-center my-5 w-full'>
         <div>
           <label className='block'>{input.label}</label>
           <select
@@ -31,7 +31,9 @@ export const UseCaseCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
           </select>
         </div>
         <div className='flex justify-end'>
-          <BsFillPencilFill onClick={() => setOpenEditSection(true)} />
+          <button onClick={() => setOpenEditSection(true)} className='btn'>
+            Edit
+          </button>
         </div>
       </div>
       {openEditSection && (
