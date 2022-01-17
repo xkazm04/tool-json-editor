@@ -12,8 +12,8 @@ export const HomePage = () => {
   return (
     <div className='grid grid-cols-[50%_50%]'>
       <div>
-        <button className='btn' onClick={() => setShowModal(true)}>
-          Add use case
+        <button className='btn' onClick={() => setShowModal(!showModal)}>
+          {showModal ? "Close" : "Add use case"}
         </button>
         {showModal && <EditingModal closeModal={closeModal} />}
         <UseCases />

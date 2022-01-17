@@ -12,7 +12,7 @@ interface OwnProps {
 }
 
 export const UseCaseEditSection = ({
-  input: { children, label: labelValue, id, value, useCaseType },
+  input: { children, label: labelValue, id },
   closeEditSection,
 }: OwnProps): JSX.Element => {
   const [label, setLabel] = useState<{
@@ -105,7 +105,7 @@ export const UseCaseEditSection = ({
           return (
             <div
               key={index}
-              className='grid grid-cols-[70%_20%] p-2 gap-x-10 bg-red-300 my-2 rounded-xl'
+              className='grid grid-cols-[60%_20%] p-2 gap-x-10 bg-red-300 my-2 rounded-xl'
             >
               <Editable
                 useCaseType={useCaseType}
@@ -151,7 +151,11 @@ export const UseCaseEditSection = ({
               }
             />
             <div className='self-end'>
-              <button type='submit' className='btn '>
+              <button
+                disabled={newInput.value === ""}
+                type='submit'
+                className='btn '
+              >
                 Confirm
               </button>
               <button
@@ -183,6 +187,7 @@ export const UseCaseEditSection = ({
           />
           <div className='justify-self-end self-end'>
             <button
+              disabled={codeSnippet.value === ""}
               onClick={() => {
                 buddy?.addUseCaseOption(
                   "code snippet",
@@ -197,6 +202,7 @@ export const UseCaseEditSection = ({
                     }))
                 );
               }}
+              type='submit'
               className='btn w-full '
             >
               Save
@@ -218,7 +224,8 @@ export const UseCaseEditSection = ({
       )}
       <div>
         {(options.length > 0 && options[0]["useCaseType"] === "code snippet") ||
-        codeSnippet.visible ? null : (
+        codeSnippet.visible ||
+        newInput.visible ? null : (
           <button
             className='btn my-3'
             onClick={() => setNewInput((prev) => ({ ...prev, visible: true }))}
@@ -227,7 +234,7 @@ export const UseCaseEditSection = ({
           </button>
         )}
 
-        {options?.length === 0 && !codeSnippet.visible && (
+        {options?.length === 0 && !codeSnippet.visible && !newInput.visible && (
           <button
             className='btn my-3 ml-5'
             onClick={() =>

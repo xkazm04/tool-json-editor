@@ -59,7 +59,7 @@ export const Editable = ({
               Edit
             </button>
             {onUseCaseDelete && (
-              <button className='btn' onClick={onUseCaseDelete}>
+              <button className='btn ml-2' onClick={onUseCaseDelete}>
                 Delete
               </button>
             )}

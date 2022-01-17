@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Input } from "./Input";
 import { BsFillTrashFill, BsFillXCircleFill } from "react-icons/bs";
 import { useBuddy } from "../providers/Buddy";
@@ -11,6 +11,18 @@ export const EditingModal = ({ closeModal }: OwnProps): JSX.Element => {
   const [labelValue, setLabelValue] = useState("");
   const [inputs, setInputs] = useState([{ value: "" }]);
   const buddy = useBuddy();
+  const newOptionRef = useRef<HTMLInputElement | null>(null);
+  const labelRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    labelRef.current?.focus();
+  }, []);
+
+  const validInputs = () => {
+    const isInputsValid = inputs.every((input) => input.value !== "".trim());
+    const isLabelValid = labelValue.trim();
+    return isInputsValid && isLabelValid;
+  };
 
   const handleInputChange = (
     e: React.FormEvent<HTMLInputElement>,
@@ -38,6 +50,7 @@ export const EditingModal = ({ closeModal }: OwnProps): JSX.Element => {
   return (
     <div className='w-full relative min-h-[300px] bg-red-400 rounded-lg my-5 p-5'>
       <Input
+        ref={labelRef}
         labelText={"Select label for group of options"}
         value={labelValue}
         onChange={(e) => setLabelValue((e.target as HTMLInputElement).value)}
@@ -47,6 +60,7 @@ export const EditingModal = ({ closeModal }: OwnProps): JSX.Element => {
         return (
           <div key={index} className='grid grid-cols-[1fr_5%] items-center'>
             <Input
+              ref={newOptionRef}
               labelText={`Option ${index + 1}`}
               value={input.value}
               onChange={(e) => handleInputChange(e, index)}
@@ -64,7 +78,11 @@ export const EditingModal = ({ closeModal }: OwnProps): JSX.Element => {
         <button className='btn' onClick={handleInputAdd}>
           Add input
         </button>
-        <button className='btn ml-5' onClick={() => addFirstUseCase()}>
+        <button
+          disabled={!validInputs()}
+          className='btn ml-5'
+          onClick={() => addFirstUseCase()}
+        >
           Add use case
         </button>
       </div>
