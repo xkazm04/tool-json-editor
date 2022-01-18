@@ -4,7 +4,7 @@ import { BuddyBuilderType } from "../types";
 export const createUseCase = (
   type: BuddyBuilderType["useCaseType"],
   value: string,
-  label: string = "default"
+  label: string = ""
 ): BuddyBuilderType => {
   const useCase = {
     id: uuid(),

@@ -1,10 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { BuddyBuilderType } from "../types";
 import { createUseCase } from "../utils/createUseCase";
+import { getSchemas } from "../utils/schemaAPI";
+
+interface SchemaAttributes {
+  Title: string;
+  Tree: BuddyBuilderType;
+  createdAt: string;
+  locale: string;
+  publishedAt: string;
+  updatedAt: string;
+}
+
+interface Schema {
+  attributes: SchemaAttributes;
+  id: number;
+}
 
 interface BuddyContextType {
   buddy: BuddyBuilderType | null;
   inputs: BuddyBuilderType[] | [];
+  loadingSchema: boolean;
+  schemas: Schema[];
+  currentlyEditingSchema: number | null;
+  setBuddy: React.Dispatch<React.SetStateAction<BuddyBuilderType | null>>;
   addUseCaseOption: (
     useCaseType: BuddyBuilderType["useCaseType"],
     optionValue: string,
@@ -24,13 +43,36 @@ interface BuddyContextType {
     newValue: string
   ) => void;
   deleteUseCase: (id: string, buddy: BuddyBuilderType | null) => void;
+  setActiveSchema: (id: number) => void;
 }
 
 export const BuddyContext = React.createContext<BuddyContextType | null>(null);
 
 export const useBuddyContext = (): BuddyContextType => {
+  const [loadingSchema, setLoadingSchema] = useState(false);
   const [buddy, setBuddy] = useState<BuddyBuilderType | null>(null);
   const [inputs, setInputs] = useState<BuddyBuilderType[] | []>([]);
+  const [schemas, setSchemas] = useState<Schema[] | []>([]);
+  const [currentlyEditingSchema, setCurrentlyEditingSchema] = useState<
+    number | null
+  >(null);
+
+  useEffect(() => {
+    setLoadingSchema(true);
+    getSchemas().then((sch) => {
+      sch && setSchemas(sch);
+      setLoadingSchema(false);
+    });
+  }, []);
+
+  const setActiveSchema = (id: number) => {
+    const activeSchema = schemas.find((schema) => schema.id === id);
+
+    if (activeSchema) {
+      setBuddy(activeSchema.attributes.Tree);
+      setCurrentlyEditingSchema(activeSchema.id);
+    }
+  };
 
   const deleteUseCase = (id: string, buddy: BuddyBuilderType | null) => {
     const deleteCase = (buddy: BuddyBuilderType | null) => {
@@ -99,15 +141,14 @@ export const useBuddyContext = (): BuddyContextType => {
   };
 
   const updateInputs = (inputs: BuddyBuilderType[]) => {
-    if (buddy && inputs.length === 0) {
-      setInputs([buddy]);
+    if ((buddy && inputs.length === 0) || inputs[0]["id"] !== buddy?.id) {
+      setInputs([buddy as BuddyBuilderType]);
     } else {
       const updatedInputs = inputs.map((input) => {
         let matchedInput = null;
         const current = buddy;
         const queue = [];
         queue.push(current);
-
         while (queue.length > 0) {
           const last = queue.shift();
           if (last?.id === input.id) {
@@ -158,7 +199,7 @@ export const useBuddyContext = (): BuddyContextType => {
   const addUseCaseOption = (
     useCaseType: BuddyBuilderType["useCaseType"],
     optionValue: string,
-    label: string = "default",
+    label: string = "",
     useCaseID?: string,
     onFinish?: () => void
   ) => {
@@ -193,7 +234,7 @@ export const useBuddyContext = (): BuddyContextType => {
     setBuddy((prev) => ({ ...prev, ...updatedBuddy }));
     onFinish && onFinish();
   };
-  console.log("buddy", buddy);
+
   useEffect(() => {
     if (!buddy) return;
     updateInputs(inputs);
@@ -207,6 +248,11 @@ export const useBuddyContext = (): BuddyContextType => {
     selectOption,
     editUseCaseValue,
     deleteUseCase,
+    loadingSchema,
+    schemas,
+    setActiveSchema,
+    currentlyEditingSchema,
+    setBuddy,
   };
 };
 

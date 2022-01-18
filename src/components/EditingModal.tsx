@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Input } from "./Input";
-import { BsFillTrashFill, BsFillXCircleFill } from "react-icons/bs";
+import { BsFillXCircleFill } from "react-icons/bs";
 import { useBuddy } from "../providers/Buddy";
 import AltKey from "../assets/alt.png";
 import PlusKey from "../assets/plus.png";
@@ -83,7 +83,7 @@ export const EditingModal = ({ closeModal }: OwnProps): JSX.Element => {
   };
 
   return (
-    <div className='w-full relative min-h-[300px] bg-red-400 rounded-lg my-5 p-5'>
+    <div className='max-w-screen-lg m-auto relative min-h-[300px] bg-red-400 rounded-lg my-5 p-5'>
       <Input
         ref={labelRef}
         labelText={"Select label for group of options"}
