@@ -44,7 +44,7 @@ export const Editable = ({
         </>
       ) : (
         <>
-          <div>
+          <div className='mt-4'>
             {useCaseType === "input" ? (
               <>
                 <label className='block text-sm text-white'>{label}</label>
@@ -59,7 +59,7 @@ export const Editable = ({
               Edit
             </button>
             {onUseCaseDelete && (
-              <button className='btn ml-2' onClick={onUseCaseDelete}>
+              <button className='btn' onClick={onUseCaseDelete}>
                 Delete
               </button>
             )}

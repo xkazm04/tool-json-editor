@@ -18,7 +18,7 @@ export const HomePage = () => {
   return (
     <>
       <div className='w-full flex justify-evenly mb-6 '>
-        <div className='flex justify-between items-center bg-cyan-400 rounded-lg p-5'>
+        <div className='flex justify-between items-center bg-blue-300 rounded-lg p-5'>
           <label className='font-mono font-bold text-[20px]'>Show schema</label>
           <input
             type='checkbox'
@@ -27,7 +27,7 @@ export const HomePage = () => {
             onChange={() => setShowSchema(!showSchema)}
           />
         </div>
-        <div className='bg-cyan-400 rounded-lg p-5'>
+        <div className='bg-blue-300 rounded-lg p-5'>
           <button
             className='btn'
             onClick={() =>
@@ -37,7 +37,7 @@ export const HomePage = () => {
             Save schema to CMS
           </button>
         </div>
-        <div className='bg-cyan-400 rounded-lg p-5'>
+        <div className='bg-blue-300 rounded-lg p-5'>
           {buddy?.schemas.map(({ id, attributes }, index) => {
             return (
               <button
