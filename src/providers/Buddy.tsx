@@ -123,7 +123,7 @@ export const useBuddyContext = (): BuddyContextType => {
   };
 
   const handlePreviousSelectChange = (selectIndex: number, id: string) => {
-    const validInputs = inputs.slice(selectIndex, 1);
+    const validInputs = inputs.slice(0, selectIndex + 1);
     const nextUseCase = findUseCase(id);
     nextUseCase && setInputs([...validInputs, nextUseCase]);
   };
@@ -162,7 +162,7 @@ export const useBuddyContext = (): BuddyContextType => {
       setInputs(updatedInputs as BuddyBuilderType[]);
     }
   };
-
+  console.log("inputs", inputs);
   const addRootUseCase = (
     value: string,
     useCaseType: BuddyBuilderType["useCaseType"],
@@ -238,6 +238,7 @@ export const useBuddyContext = (): BuddyContextType => {
   useEffect(() => {
     if (!buddy) return;
     updateInputs(inputs);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buddy]);
 
   return {

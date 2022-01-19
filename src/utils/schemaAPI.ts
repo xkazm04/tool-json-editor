@@ -19,19 +19,15 @@ export const saveSchema = async (
   buddy: BuddyBuilderType | null | undefined
 ) => {
   if (!id || !buddy) return;
-  const response = await fetch(
-    `https://strapideploys.herokuapp.com/api/buddies/${id}`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
+  await fetch(`https://strapideploys.herokuapp.com/api/buddies/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      data: {
+        Tree: buddy,
       },
-      body: JSON.stringify({
-        data: {
-          Tree: buddy,
-        },
-      }),
-    }
-  );
-  const data = await response.json();
+    }),
+  });
 };

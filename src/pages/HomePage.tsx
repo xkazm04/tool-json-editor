@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import { EditingModal } from "../components/EditingModal";
+// import { EditingModal } from "../components/EditingModal";
 import { Schema } from "../components/Schema";
 import { UseCases } from "../components/UseCases";
 import { useBuddy } from "../providers/Buddy";
 import { saveSchema } from "../utils/schemaAPI";
 
 export const HomePage = () => {
-  const [showModal, setShowModal] = useState(false);
+  // const [showModal, setShowModal] = useState(false);
   const [showSchema, setShowSchema] = useState(true);
   const buddy = useBuddy();
 
-  const closeModal = () => setShowModal(false);
+  // const closeModal = () => setShowModal(false);
 
   if (buddy?.loadingSchema) {
     return <div>Loading...</div>;
