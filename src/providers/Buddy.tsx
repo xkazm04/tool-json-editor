@@ -17,6 +17,11 @@ interface Schema {
   id: number;
 }
 
+export interface NotificationType {
+  type: "success" | "error";
+  message: string;
+}
+
 interface BuddyContextType {
   buddy: BuddyBuilderType | null;
   inputs: BuddyBuilderType[] | [];
@@ -44,6 +49,9 @@ interface BuddyContextType {
   ) => void;
   deleteUseCase: (id: string, buddy: BuddyBuilderType | null) => void;
   setActiveSchema: (id: number) => void;
+  notifications: NotificationType[];
+  addNotification: (type: "error" | "success", message: string) => void;
+  deleteNotifications: () => void;
 }
 
 export const BuddyContext = React.createContext<BuddyContextType | null>(null);
@@ -56,13 +64,41 @@ export const useBuddyContext = (): BuddyContextType => {
   const [currentlyEditingSchema, setCurrentlyEditingSchema] = useState<
     number | null
   >(null);
+  const [notifications, setNotifications] = React.useState<
+    NotificationType[] | []
+  >([]);
+
+  const addNotification = (type: NotificationType["type"], message: string) => {
+    console.log("function is called", type, message);
+    setNotifications((prev) => [...prev, { type, message }]);
+  };
+
+  const deleteNotifications = () => {
+    setNotifications([]);
+  };
 
   useEffect(() => {
     setLoadingSchema(true);
-    getSchemas().then((sch) => {
-      sch && setSchemas(sch);
-      setLoadingSchema(false);
-    });
+    getSchemas()
+      .then((sch) => {
+        console.log("sch", sch);
+        if (sch.data) {
+          setSchemas(sch.data);
+          return;
+        }
+        if (sch.data.error.status) {
+          throw new Error();
+        }
+      })
+      .catch((err) => {
+        if (err) {
+          addNotification(
+            "error",
+            "Honzo. Buddies were not found. Please try again"
+          );
+        }
+      })
+      .finally(() => setLoadingSchema(false));
   }, []);
 
   const setActiveSchema = (id: number) => {
@@ -162,7 +198,6 @@ export const useBuddyContext = (): BuddyContextType => {
       setInputs(updatedInputs as BuddyBuilderType[]);
     }
   };
-  console.log("inputs", inputs);
   const addRootUseCase = (
     value: string,
     useCaseType: BuddyBuilderType["useCaseType"],
@@ -238,7 +273,7 @@ export const useBuddyContext = (): BuddyContextType => {
   useEffect(() => {
     if (!buddy) return;
     updateInputs(inputs);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buddy]);
 
   return {
@@ -254,6 +289,9 @@ export const useBuddyContext = (): BuddyContextType => {
     setActiveSchema,
     currentlyEditingSchema,
     setBuddy,
+    notifications,
+    addNotification,
+    deleteNotifications,
   };
 };
 

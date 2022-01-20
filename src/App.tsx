@@ -1,4 +1,5 @@
 import React from "react";
+import { Notification } from "./components/Notification";
 import { HomePage } from "./pages/HomePage";
 import { BuddyContext, useBuddyContext } from "./providers/Buddy";
 
@@ -10,6 +11,7 @@ function App() {
       <div className=' bg-slate-300 py-10 px-5 min-h-screen'>
         <HomePage />
       </div>
+      <Notification />
     </BuddyContext.Provider>
   );
 }

@@ -17,26 +17,7 @@ export const HomePage = () => {
   }
   return (
     <>
-      <div className='w-full flex justify-evenly mb-6 '>
-        <div className='flex justify-between items-center bg-cyan-400 rounded-lg p-5'>
-          <label className='font-mono font-bold text-[20px]'>Show schema</label>
-          <input
-            type='checkbox'
-            checked={showSchema}
-            className='toggle toggle-primary m-auto ml-5 '
-            onChange={() => setShowSchema(!showSchema)}
-          />
-        </div>
-        <div className='bg-cyan-400 rounded-lg p-5'>
-          <button
-            className='btn'
-            onClick={() =>
-              saveSchema(buddy?.currentlyEditingSchema, buddy?.buddy)
-            }
-          >
-            Save schema to CMS
-          </button>
-        </div>
+      <div className='w-full flex justify-evenly mt-10 mb-6 '>
         <div className='bg-cyan-400 rounded-lg p-5'>
           {buddy?.schemas.map(({ id, attributes }, index) => {
             return (
@@ -52,6 +33,39 @@ export const HomePage = () => {
               </button>
             );
           })}
+        </div>
+        <div className='bg-cyan-400 rounded-lg p-5'>
+          <button
+            className='btn'
+            onClick={() =>
+              saveSchema(
+                buddy?.currentlyEditingSchema,
+                buddy?.buddy,
+                () =>
+                  buddy?.addNotification(
+                    "success",
+                    "Schema is successfully updated"
+                  ),
+                () =>
+                  buddy?.addNotification(
+                    "error",
+                    "Something went wrong. Schema is not saved. Go to fukku"
+                  )
+              )
+            }
+          >
+            Save schema to CMS
+          </button>
+        </div>
+
+        <div className='flex justify-between items-center bg-cyan-400 rounded-lg p-5'>
+          <label className='font-mono font-bold text-[20px]'>Show schema</label>
+          <input
+            type='checkbox'
+            checked={showSchema}
+            className='toggle toggle-primary m-auto ml-5 '
+            onChange={() => setShowSchema(!showSchema)}
+          />
         </div>
       </div>
       <div
