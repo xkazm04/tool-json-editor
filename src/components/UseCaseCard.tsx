@@ -25,9 +25,19 @@ export const UseCaseCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
           >
             <option selected={true} disabled value=''></option>
             {input.children.length > 0 &&
-              input.children.map(({ value, id }, index) => {
-                return <option value={id}>{value}</option>;
-              })}
+              input.children
+                .sort((a, b) => {
+                  if (a.value < b.value) {
+                    return -1;
+                  }
+                  if (a.value > b.value) {
+                    return 1;
+                  }
+                  return 0;
+                })
+                .map(({ value, id }, index) => {
+                  return <option value={id}>{value}</option>;
+                })}
           </select>
         </div>
         <div className='flex justify-end'>
