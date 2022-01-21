@@ -19,6 +19,7 @@ export const UseCaseEditSection = ({
     value: string;
     isEditing: boolean;
   }>({ value: "", isEditing: false });
+
   const labelInputRef = useRef<HTMLInputElement | null>(null);
   const newInputRef = useRef<HTMLInputElement | null>(null);
   const [newInput, setNewInput] = useState({ visible: false, value: "" });
@@ -31,7 +32,12 @@ export const UseCaseEditSection = ({
       }[]
     | []
   >([]);
-  const [codeSnippet, setCodeSnippet] = useState({ visible: false, value: "" });
+  const [codeSnippet, setCodeSnippet] = useState({
+    visible: false,
+    codeExample: "",
+    description: "",
+    chatbotId: "",
+  });
 
   const buddy = useBuddy();
 
@@ -74,6 +80,11 @@ export const UseCaseEditSection = ({
     setLabel((prev) => ({ ...prev, value: labelValue }));
   }, [labelValue]);
 
+  const validCodeSnippetsValue = Object.values(codeSnippet)
+    .filter((value) => typeof value === "string")
+    .every((value) => value !== "".trim());
+
+
   return (
     <div className='max-w-screen-lg m-auto min-h-[300px] bg-red-400 rounded-lg my-5 p-5 relative'>
       <div className='grid grid-cols-[70%_20%] gap-5 '>
@@ -82,7 +93,7 @@ export const UseCaseEditSection = ({
           text={label.value}
           label='Label for group of inputs'
           onUseCaseSave={() => {
-            buddy?.editUseCaseValue("label", id, label.value);
+            buddy?.editUseCaseValue({ label: label.value }, id);
             setLabel((prev) => ({ ...prev, isEditing: false }));
           }}
         >
@@ -110,7 +121,10 @@ export const UseCaseEditSection = ({
               <Editable
                 useCaseType={useCaseType}
                 onUseCaseSave={() =>
-                  buddy?.editUseCaseValue("value", id, options[index]["value"])
+                  buddy?.editUseCaseValue(
+                    { value: options[index]["value"] },
+                    id
+                  )
                 }
                 label={label}
                 text={value}
@@ -135,7 +149,10 @@ export const UseCaseEditSection = ({
       {newInput.visible && (
         <form
           onSubmit={() => {
-            buddy?.addUseCaseOption("input", newInput.value, undefined, id);
+            buddy?.addUseCaseOption("input", id, {
+              optionValue: newInput.value,
+              label: "",
+            });
             setNewInput((prev) => ({ ...prev, value: "", visible: false }));
           }}
         >
@@ -176,24 +193,50 @@ export const UseCaseEditSection = ({
       )}
       {codeSnippet.visible && (
         <div className='grid grid-cols-[70%_20%] gap-x-10'>
-          <TextArea
-            value={codeSnippet.value}
-            onChange={(e) =>
-              setCodeSnippet((prev) => ({
-                ...prev,
-                value: (e.target as HTMLTextAreaElement).value,
-              }))
-            }
-          />
+          <div>
+            <Input
+              value={codeSnippet.description}
+              onChange={(e) =>
+                setCodeSnippet((prev) => ({
+                  ...prev,
+                  description: (e.target as HTMLInputElement).value,
+                }))
+              }
+              labelText='Description'
+            />
+            <Input
+              onChange={(e) =>
+                setCodeSnippet((prev) => ({
+                  ...prev,
+                  chatbotId: (e.target as HTMLInputElement).value,
+                }))
+              }
+              value={codeSnippet.chatbotId}
+              labelText='ChabotId'
+            />
+            <TextArea
+              value={codeSnippet.codeExample}
+              onChange={(e) =>
+                setCodeSnippet((prev) => ({
+                  ...prev,
+                  codeExample: (e.target as HTMLTextAreaElement).value,
+                }))
+              }
+            />
+          </div>
           <div className='justify-self-end self-end'>
             <button
-              disabled={codeSnippet.value === ""}
+              disabled={!validCodeSnippetsValue}
               onClick={() => {
                 buddy?.addUseCaseOption(
                   "code snippet",
-                  codeSnippet.value,
-                  undefined,
                   id,
+                  {
+                    description: codeSnippet.description,
+                    chatbotID: codeSnippet.chatbotId,
+                    label: label.value,
+                    value: codeSnippet.codeExample,
+                  },
                   () =>
                     setCodeSnippet((prev) => ({
                       ...prev,
@@ -233,7 +276,6 @@ export const UseCaseEditSection = ({
             Add option
           </button>
         )}
-
         {options?.length === 0 && !codeSnippet.visible && !newInput.visible && (
           <button
             className='btn my-3 ml-5'

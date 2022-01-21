@@ -33,7 +33,7 @@ export const Notification = () => {
     <>
       {open && notification && (
         <div
-          className={`fixed top-0 left-[50%] transform -translate-x-[50%] font-extrabold text-xl z-50 bg-cyan-400  alert alert-${notification.type}`}
+          className={`fixed top-0 left-[50%] transform -translate-x-[50%] font-extrabold text-xl z-50   alert alert-${notification.type}`}
         >
           <div className='flex-1'>
             <label>{notification?.message}</label>

@@ -17,13 +17,13 @@ export const HomePage = () => {
   }
   return (
     <>
-      <div className='w-full flex justify-evenly mt-10 mb-6 '>
-        <div className='bg-cyan-400 rounded-lg p-5'>
+      <div className='w-full flex items-center justify-evenly mt-10 mb-6 '>
+        <div className='bg-blue-400 rounded-lg p-3 items-center'>
           {buddy?.schemas.map(({ id, attributes }, index) => {
             return (
               <button
                 onClick={() => buddy.setActiveSchema(id)}
-                className={`btn mx-5 ${
+                className={`btn mx-2 ${
                   buddy.currentlyEditingSchema === id ? "bg-red-400" : ""
                 }`}
                 key={index}
@@ -34,7 +34,7 @@ export const HomePage = () => {
             );
           })}
         </div>
-        <div className='bg-cyan-400 rounded-lg p-5'>
+        <div className='bg-blue-400 rounded-lg p-3'>
           <button
             className='btn'
             onClick={() =>
@@ -58,7 +58,7 @@ export const HomePage = () => {
           </button>
         </div>
 
-        <div className='flex justify-between items-center bg-cyan-400 rounded-lg p-5'>
+        <div className='flex justify-between items-center bg-blue-400 rounded-lg p-3'>
           <label className='font-mono font-bold text-[20px]'>Show schema</label>
           <input
             type='checkbox'
@@ -84,7 +84,7 @@ export const HomePage = () => {
           {/* {showModal && <EditingModal closeModal={closeModal} />} */}
           <UseCases />
         </div>
-        {showSchema && <Schema />}
+        <div className=''>{showSchema && <Schema />}</div>
       </div>
     </>
   );

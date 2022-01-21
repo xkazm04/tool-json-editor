@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 
-
 export const TextArea = (props: React.HTMLProps<HTMLTextAreaElement>) => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -11,7 +10,7 @@ export const TextArea = (props: React.HTMLProps<HTMLTextAreaElement>) => {
   return (
     <div className='form-control'>
       <label className='label'>
-        <span className='label-text'>Code snippet</span>
+        <span className='label-text text-white'>Code example</span>
       </label>
       <textarea
         ref={textAreaRef}

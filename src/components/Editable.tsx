@@ -27,45 +27,58 @@ export const Editable = ({
   };
 
   return (
-    <>
+    <div className='mb-5'>
       {isEditing ? (
-        <>
+        <div>
           <div>{children}</div>
           <div className='flex justify-between'>
             {onUseCaseSave && (
-              <button
-                className='btn justify-self-end self-end'
-                onClick={saveChange}
-              >
-                Save
-              </button>
+              <div className='my-3'>
+                <button
+                  className='btn justify-self-end self-end mr-2'
+                  onClick={saveChange}
+                >
+                  Save
+                </button>
+                <button className='btn' onClick={() => setIsEditing(false)}>
+                  Cancel
+                </button>
+              </div>
             )}
           </div>
-        </>
+        </div>
       ) : (
-        <>
-          <div>
+        <div>
+          <div className='mb-5 flex w-full justify-between'>
             {useCaseType === "input" ? (
-              <>
-                <label className='block text-sm text-white'>{label}</label>
+              <div>
+                <label className='font-bold text-white block my-1 '>
+                  {label}
+                </label>
                 <span>{text}</span>
-              </>
+              </div>
             ) : (
-              <CodeSnippet text={text} />
+              <div>
+                <label className='font-bold text-white block mb-3'>
+                  {label}
+                </label>
+                <CodeSnippet text={text} />
+              </div>
             )}
-          </div>
-          <div className='flex justify-between'>
-            <button className='btn' onClick={() => setIsEditing(true)}>
-              Edit
-            </button>
-            {onUseCaseDelete && (
-              <button className='btn ml-2' onClick={onUseCaseDelete}>
-                Delete
+            <div className='flex justify-between my-2 self-end'>
+              <button className='btn' onClick={() => setIsEditing(true)}>
+                Edit
               </button>
-            )}
+
+              {onUseCaseDelete && (
+                <button className='btn ml-2' onClick={onUseCaseDelete}>
+                  Delete
+                </button>
+              )}
+            </div>
           </div>
-        </>
+        </div>
       )}
-    </>
+    </div>
   );
 };

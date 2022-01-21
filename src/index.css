@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .fancy-scrollbar::-webkit-scrollbar {
+    background-color: #eeeef0;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+  }
+  .fancy-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #3ea2e5;
+    border-radius: 999px;
+  }
+}

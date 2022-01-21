@@ -1,16 +1,15 @@
 import { v4 as uuid } from "uuid";
-import { BuddyBuilderType } from "../types";
+import { FunctionParams } from "../providers/Buddy";
 
-export const createUseCase = (
-  type: BuddyBuilderType["useCaseType"],
-  value: string,
-  label: string = ""
-): BuddyBuilderType => {
+export const createUseCase = ({
+  optionValue,
+  label,
+}: FunctionParams["input"]) => {
   const useCase = {
     id: uuid(),
-    useCaseType: type,
+    useCaseType: "input",
     label,
-    value,
+    value: optionValue,
     children: [],
   };
   return useCase;

@@ -13,10 +13,9 @@ export const UseCaseCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
   const buddy = useBuddy();
 
   const closeEditSection = () => setOpenEditSection(false);
-
   return (
     <>
-      <div className='max-w-screen-lg m-auto bg-cyan-300 rounded-lg p-5  grid grid-cols-[50%_50%] justify-center items-center my-5 w-full'>
+      <div className='max-w-screen-lg m-auto bg-blue-300 rounded-lg p-5  grid grid-cols-[50%_50%] justify-center items-center my-5 w-full'>
         <div>
           {input?.label && <label className='block'>{input.label}</label>}
           <select

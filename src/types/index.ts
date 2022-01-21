@@ -4,4 +4,6 @@ export interface BuddyBuilderType {
   label: string;
   id: string;
   children: BuddyBuilderType[] | [];
+  description?: string;
+  chatbotID?: string;
 }

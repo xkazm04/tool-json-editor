@@ -8,7 +8,7 @@ function App() {
 
   return (
     <BuddyContext.Provider value={buddy}>
-      <div className=' bg-slate-300 py-10 px-5 min-h-screen'>
+      <div className=' bg-indigo-900 py-5 px-5 min-h-screen'>
         <HomePage />
       </div>
       <Notification />

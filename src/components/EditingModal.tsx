@@ -78,7 +78,7 @@ export const EditingModal = ({ closeModal }: OwnProps): JSX.Element => {
   };
 
   const addFirstUseCase = () => {
-    buddy?.addRootUseCase(labelValue, "input", inputs);
+    // buddy?.addRootUseCase(labelValue, "input", inputs);
     closeModal();
   };
 

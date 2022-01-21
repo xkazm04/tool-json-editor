@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BuddyBuilderType } from "../types";
+import { createCodeSnippet } from "../utils/createCodeSnippet";
 import { createUseCase } from "../utils/createUseCase";
 import { getSchemas } from "../utils/schemaAPI";
 
@@ -12,6 +13,11 @@ interface SchemaAttributes {
   updatedAt: string;
 }
 
+type BuddyBuilderTypeKeys = keyof BuddyBuilderType;
+type EditingValues = {
+  [K in BuddyBuilderTypeKeys]: BuddyBuilderType[K];
+};
+
 interface Schema {
   attributes: SchemaAttributes;
   id: number;
@@ -22,6 +28,23 @@ export interface NotificationType {
   message: string;
 }
 
+export type UseCaseType = "code snippet" | "input";
+
+export type FunctionParams = {
+  input: {
+    optionValue: string;
+    label: string;
+  };
+  "code snippet": {
+    value: string;
+    description: string;
+    chatbotID: string;
+    label: string;
+  };
+};
+
+
+
 interface BuddyContextType {
   buddy: BuddyBuilderType | null;
   inputs: BuddyBuilderType[] | [];
@@ -29,24 +52,19 @@ interface BuddyContextType {
   schemas: Schema[];
   currentlyEditingSchema: number | null;
   setBuddy: React.Dispatch<React.SetStateAction<BuddyBuilderType | null>>;
-  addUseCaseOption: (
-    useCaseType: BuddyBuilderType["useCaseType"],
-    optionValue: string,
-    label?: string,
-    useCaseID?: string,
+
+  addUseCaseOption: <T extends UseCaseType>(
+    useCaseType: T,
+    useCaseID: string,
+    values: FunctionParams[T],
     onFinish?: () => void
-  ) => void;
-  addRootUseCase: (
-    value: string,
-    useCaseType: BuddyBuilderType["useCaseType"],
-    useCaseOptions: { value: string }[]
   ) => void;
   selectOption: (id: string, selectIndex: number) => void;
   editUseCaseValue: (
-    valueType: "value" | "label",
-    id: string,
-    newValue: string
+    changingValue: Partial<EditingValues>,
+    id: string
   ) => void;
+
   deleteUseCase: (id: string, buddy: BuddyBuilderType | null) => void;
   setActiveSchema: (id: number) => void;
   notifications: NotificationType[];
@@ -69,7 +87,6 @@ export const useBuddyContext = (): BuddyContextType => {
   >([]);
 
   const addNotification = (type: NotificationType["type"], message: string) => {
-    console.log("function is called", type, message);
     setNotifications((prev) => [...prev, { type, message }]);
   };
 
@@ -80,13 +97,12 @@ export const useBuddyContext = (): BuddyContextType => {
   useEffect(() => {
     setLoadingSchema(true);
     getSchemas()
-      .then((sch) => {
-        console.log("sch", sch);
-        if (sch.data) {
-          setSchemas(sch.data);
+      .then((schema) => {
+        if (schema.data) {
+          setSchemas(schema.data);
           return;
         }
-        if (sch.data.error.status) {
+        if (schema.data.error.status) {
           throw new Error();
         }
       })
@@ -132,9 +148,8 @@ export const useBuddyContext = (): BuddyContextType => {
   };
 
   const editUseCaseValue = (
-    valueType: "value" | "label",
-    id: string,
-    newValue: string
+    changingValue: Partial<EditingValues>,
+    id: string
   ) => {
     const edit = (buddy: BuddyBuilderType | null) => {
       if (!buddy) return;
@@ -142,8 +157,8 @@ export const useBuddyContext = (): BuddyContextType => {
 
       for (let [key, value] of Object.entries(current)) {
         if (typeof key === "string") {
-          if (current.id === id) {
-            current[valueType as any] = newValue.trim();
+          if (current.id === id && changingValue.hasOwnProperty(key)) {
+            current[key] = (changingValue as any)[key].trim();
           } else {
             current[key as keyof BuddyBuilderType] = value;
           }
@@ -157,6 +172,7 @@ export const useBuddyContext = (): BuddyContextType => {
     const editedBuddy = edit(buddy);
     setBuddy((prev) => ({ ...prev, ...editedBuddy }));
   };
+
 
   const handlePreviousSelectChange = (selectIndex: number, id: string) => {
     const validInputs = inputs.slice(0, selectIndex + 1);
@@ -198,20 +214,6 @@ export const useBuddyContext = (): BuddyContextType => {
       setInputs(updatedInputs as BuddyBuilderType[]);
     }
   };
-  const addRootUseCase = (
-    value: string,
-    useCaseType: BuddyBuilderType["useCaseType"],
-    useCaseOptions: { value: string }[]
-  ) => {
-    const useCase = createUseCase(useCaseType, value, undefined);
-    setBuddy(buddy);
-    const options = useCaseOptions.map((option) =>
-      createUseCase(useCaseType, option.value)
-    );
-    useCase.children = options;
-    setBuddy(useCase);
-    return useCase;
-  };
 
   const findUseCase = (id: string): BuddyBuilderType | null => {
     let searched = null;
@@ -233,11 +235,22 @@ export const useBuddyContext = (): BuddyContextType => {
 
   const addUseCaseOption = (
     useCaseType: BuddyBuilderType["useCaseType"],
-    optionValue: string,
-    label: string = "",
-    useCaseID?: string,
+    useCaseID: string,
+    values: FunctionParams["code snippet"] | FunctionParams["input"],
     onFinish?: () => void
   ) => {
+    const newUseCaseOption =
+      useCaseType === "input"
+        ? createUseCase({
+            optionValue: (values as FunctionParams["input"]).optionValue,
+            label: (values as FunctionParams["input"]).label,
+          })
+        : createCodeSnippet({
+            description: (values as FunctionParams["code snippet"]).description,
+            chatbotID: (values as FunctionParams["code snippet"]).chatbotID,
+            label: values.label,
+            value: (values as FunctionParams["code snippet"]).value,
+          });
     const traverseBuddy = (buddy: BuddyBuilderType): BuddyBuilderType => {
       let current: any = buddy;
 
@@ -246,11 +259,6 @@ export const useBuddyContext = (): BuddyContextType => {
           current[key as keyof BuddyBuilderType] = value;
         }
         if (Array.isArray(value)) {
-          const newUseCaseOption = createUseCase(
-            useCaseType,
-            optionValue,
-            label
-          );
           if (current.id === useCaseID) {
             current[key] = [
               ...(value as Array<BuddyBuilderType>),
@@ -279,7 +287,6 @@ export const useBuddyContext = (): BuddyContextType => {
   return {
     buddy,
     addUseCaseOption,
-    addRootUseCase,
     inputs,
     selectOption,
     editUseCaseValue,
