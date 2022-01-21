@@ -116,7 +116,7 @@ export const UseCaseEditSection = ({
           return (
             <div
               key={index}
-              className='grid grid-cols-[60%_20%] p-2 gap-x-10 bg-red-300 my-2 rounded-xl'
+              className='p-2 bg-red-300 my-2 rounded-xl'
             >
               <Editable
                 useCaseType={useCaseType}
