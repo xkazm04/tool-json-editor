@@ -1,17 +1,135 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // import { EditingModal } from "../components/EditingModal";
 import { Schema } from "../components/Schema";
 import { UseCases } from "../components/UseCases";
 import { useBuddy } from "../providers/Buddy";
 import { saveSchema } from "../utils/schemaAPI";
+import Tree from "react-d3-tree";
+import { BuddyBuilderType } from "../types";
+
+const orgChart = {
+  name: "CEO",
+  children: [
+    {
+      name: "Manager",
+      attributes: {
+        department: "Production",
+      },
+      children: [
+        {
+          name: "Foreman",
+          attributes: {
+            department: "Fabrication",
+          },
+          children: [
+            {
+              name: "Worker",
+            },
+          ],
+        },
+        {
+          name: "Foreman",
+          attributes: {
+            department: "Assembly",
+          },
+          children: [
+            {
+              name: "Worker",
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+const renderForeignObjectNode = ({
+  nodeDatum,
+  toggleNode,
+  foreignObjectProps,
+}: any) => {
+  return (
+    <g>
+      <circle onClick={toggleNode} r={15}></circle>
+      <foreignObject {...foreignObjectProps}>
+        <div
+          style={{
+            backgroundColor: "#dedede",
+            // maxWidth: "100px",
+          }}
+        >
+          <h3 style={{ textAlign: "center" }}>
+            {nodeDatum?.attributes?.value}
+          </h3>
+        </div>
+      </foreignObject>
+    </g>
+  );
+};
 
 export const HomePage = () => {
   // const [showModal, setShowModal] = useState(false);
   const [showSchema, setShowSchema] = useState(true);
   const buddy = useBuddy();
+  const [d3Tree, setD3Tree] = useState<any>({});
+
+  const deepClone = (buddy: BuddyBuilderType, cloned: {} = {}) => {
+    const deeplyCloned = cloned;
+    for (let [key, value] of Object.entries(buddy)) {
+      if (Array.isArray(value)) {
+        (deeplyCloned as any)[key] = value.map((v) => deepClone(v, {}));
+      } else {
+        (deeplyCloned as any)[key] = value;
+      }
+    }
+    return deeplyCloned;
+  };
+
+  const convertToD3CompatibleTree = (buddy: BuddyBuilderType) => {
+    const deeplyClonedBuddy = deepClone(buddy);
+    const convertTree = (tree: any) => {
+      tree.attributes = {};
+      for (let [key, value] of Object.entries(tree)) {
+        console.log("tree", tree);
+        if (key === "label") {
+          tree.name = value;
+          delete tree[key];
+        }
+        if (!Array.isArray(value) && key !== "attributes") {
+          tree.attributes[key] = value;
+          delete tree[key];
+        }
+        if (Array.isArray(value)) {
+          tree[key] = value.map((v) => convertTree(v));
+        }
+      }
+      console.log("tree", tree);
+      return tree;
+    };
+    const d3Tree = convertTree(deeplyClonedBuddy);
+    setD3Tree(d3Tree);
+    console.log("buddy,clo", deeplyClonedBuddy);
+    // console.log("convertTree", res);
+  };
+
+  useEffect(() => {
+    if (buddy?.buddy) {
+      convertToD3CompatibleTree(buddy.buddy);
+    }
+  }, [buddy?.buddy]);
+
+  const rednerCustom = (rd3tProps: any) => {
+    return renderForeignObjectNode({ ...rd3tProps, foreignObjectProps });
+  };
 
   // const closeModal = () => setShowModal(false);
-
+  const nodeSize = { x: 200, y: 100 };
+  const foreignObjectProps = {
+    width: nodeSize.x,
+    height: nodeSize.y,
+    y: 30,
+    x: -30,
+  };
   if (buddy?.loadingSchema) {
     return <div>Loading...</div>;
   }
@@ -85,6 +203,21 @@ export const HomePage = () => {
           <UseCases />
         </div>
         <div className=''>{showSchema && <Schema />}</div>
+      </div>
+      <div
+        id='treeWrapper'
+        style={{
+          width: "100vw",
+          height: "50em",
+          backgroundColor: "red",
+          borderRadius: "10px",
+        }}
+      >
+        <Tree
+          data={d3Tree}
+          initialDepth={1}
+          renderCustomNodeElement={rednerCustom}
+        ></Tree>
       </div>
     </>
   );
