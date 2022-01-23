@@ -24,7 +24,7 @@ export const CodeSnippetEditSection = ({
     codeExample: value,
   });
   return (
-    <div className='max-w-screen-lg m-auto min-h-[300px] bg-red-400 rounded-lg my-5 p-5 relative'>
+    <div className='max-w-screen-lg m-auto min-h-[300px] bg-glass rounded-lg my-5 p-5 relative'>
       <div>
         <Editable
           useCaseType={"input"}

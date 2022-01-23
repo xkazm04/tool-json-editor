@@ -65,7 +65,7 @@ export const Editable = ({
                 <CodeSnippet text={text} />
               </div>
             )}
-            <div className='flex justify-between my-2 self-end'>
+            <div className='flex justify-between  my-2 self-end'>
               <button className='btn' onClick={() => setIsEditing(true)}>
                 Edit
               </button>

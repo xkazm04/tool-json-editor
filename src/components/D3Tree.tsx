@@ -14,9 +14,13 @@ export const D3Tree = ({ d3Tree }: OwnProps): JSX.Element => {
   }: any) => {
     return (
       <g>
-        <circle onClick={toggleNode} r={15}></circle>
+        <circle
+          onClick={toggleNode}
+          className='fill-[#AF7AC5] stroke-[#9B59B6]'
+          r={15}
+        ></circle>
         <foreignObject {...foreignObjectProps}>
-          <div className="bg-blue-400 rounded-lg">
+          <div className='text-white rounded-lg'>
             <h3 style={{ textAlign: "center" }}>
               {nodeDatum?.attributes?.value}
             </h3>
@@ -35,12 +39,14 @@ export const D3Tree = ({ d3Tree }: OwnProps): JSX.Element => {
     width: nodeSize.x,
     height: nodeSize.y,
     y: 30,
-    x: -30,
+    x: -100,
   };
 
   return (
-    <div id="treeWrapper" className="w-screen h-80 rounded-xl">
+    <div id='treeWrapper' className='w-full h-[80vh] rounded-xl bg-glass'>
       <Tree
+        transitionDuration={1000}
+        translate={{ x: 400, y: 300 }}
         data={d3Tree}
         initialDepth={1}
         renderCustomNodeElement={rednerCustom}

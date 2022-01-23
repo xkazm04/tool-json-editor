@@ -84,9 +84,8 @@ export const UseCaseEditSection = ({
     .filter((value) => typeof value === "string")
     .every((value) => value !== "".trim());
 
-
   return (
-    <div className='max-w-screen-lg m-auto min-h-[300px] bg-red-400 rounded-lg my-5 p-5 relative'>
+    <div className='max-w-screen-lg m-auto min-h-[300px] bg-glass  rounded-lg my-5 p-5 relative'>
       <div className='grid grid-cols-[70%_20%] gap-5 '>
         <Editable
           useCaseType={"input"}
@@ -114,10 +113,7 @@ export const UseCaseEditSection = ({
       {options.length > 0 &&
         options.map(({ label, value, id, useCaseType }, index) => {
           return (
-            <div
-              key={index}
-              className='p-2 bg-red-300 my-2 rounded-xl'
-            >
+            <div key={index} className='p-2 bg-glass my-2 rounded-xl'>
               <Editable
                 useCaseType={useCaseType}
                 onUseCaseSave={() =>

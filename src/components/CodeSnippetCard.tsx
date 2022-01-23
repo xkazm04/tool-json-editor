@@ -17,7 +17,7 @@ export const CodeSnippetCard = ({ inputIndex, codeSnippet }: OwnProps) => {
   console.log("infsdfs", codeSnippet.id);
   return (
     <>
-      <div className='max-w-screen-lg m-auto bg-blue-300 rounded-lg p-5  grid grid-cols-[50%_50%] justify-center items-center my-5 w-full'>
+      <div className='max-w-screen-lg m-auto bg-glass rounded-lg p-5  grid grid-cols-[50%_50%] justify-center items-center my-5 w-full'>
         <div>
           <div className='mb-5'>
             <label className='font-bold text-white block my-1'>Label</label>
@@ -34,13 +34,13 @@ export const CodeSnippetCard = ({ inputIndex, codeSnippet }: OwnProps) => {
             <span>{chatbotID}</span>
           </div>
           <div>
-            <label className='font-bold text-white block my-1'>
+            <label className='font-bold text-white block mb-3'>
               Code example
             </label>
             <CodeSnippet text={value} />
           </div>
         </div>
-        <div className='flex justify-end'>
+        <div className='flex justify-end self-start'>
           {openEditSection ? (
             <button onClick={() => setOpenEditSection(false)} className='btn'>
               Close
