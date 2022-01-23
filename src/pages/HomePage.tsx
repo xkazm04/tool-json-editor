@@ -6,69 +6,9 @@ import { useBuddy } from "../providers/Buddy";
 import { saveSchema } from "../utils/schemaAPI";
 import Tree from "react-d3-tree";
 import { BuddyBuilderType } from "../types";
-
-const orgChart = {
-  name: "CEO",
-  children: [
-    {
-      name: "Manager",
-      attributes: {
-        department: "Production",
-      },
-      children: [
-        {
-          name: "Foreman",
-          attributes: {
-            department: "Fabrication",
-          },
-          children: [
-            {
-              name: "Worker",
-            },
-          ],
-        },
-        {
-          name: "Foreman",
-          attributes: {
-            department: "Assembly",
-          },
-          children: [
-            {
-              name: "Worker",
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
-
-const renderForeignObjectNode = ({
-  nodeDatum,
-  toggleNode,
-  foreignObjectProps,
-}: any) => {
-  return (
-    <g>
-      <circle onClick={toggleNode} r={15}></circle>
-      <foreignObject {...foreignObjectProps}>
-        <div
-          style={{
-            backgroundColor: "#dedede",
-            // maxWidth: "100px",
-          }}
-        >
-          <h3 style={{ textAlign: "center" }}>
-            {nodeDatum?.attributes?.value}
-          </h3>
-        </div>
-      </foreignObject>
-    </g>
-  );
-};
+import { D3Tree } from "../components/D3Tree";
 
 export const HomePage = () => {
-  // const [showModal, setShowModal] = useState(false);
   const [showSchema, setShowSchema] = useState(true);
   const buddy = useBuddy();
   const [d3Tree, setD3Tree] = useState<any>({});
@@ -90,7 +30,6 @@ export const HomePage = () => {
     const convertTree = (tree: any) => {
       tree.attributes = {};
       for (let [key, value] of Object.entries(tree)) {
-        console.log("tree", tree);
         if (key === "label") {
           tree.name = value;
           delete tree[key];
@@ -103,13 +42,10 @@ export const HomePage = () => {
           tree[key] = value.map((v) => convertTree(v));
         }
       }
-      console.log("tree", tree);
       return tree;
     };
     const d3Tree = convertTree(deeplyClonedBuddy);
     setD3Tree(d3Tree);
-    console.log("buddy,clo", deeplyClonedBuddy);
-    // console.log("convertTree", res);
   };
 
   useEffect(() => {
@@ -118,25 +54,13 @@ export const HomePage = () => {
     }
   }, [buddy?.buddy]);
 
-  const rednerCustom = (rd3tProps: any) => {
-    return renderForeignObjectNode({ ...rd3tProps, foreignObjectProps });
-  };
-
-  // const closeModal = () => setShowModal(false);
-  const nodeSize = { x: 200, y: 100 };
-  const foreignObjectProps = {
-    width: nodeSize.x,
-    height: nodeSize.y,
-    y: 30,
-    x: -30,
-  };
   if (buddy?.loadingSchema) {
     return <div>Loading...</div>;
   }
   return (
     <>
-      <div className='w-full flex items-center justify-evenly mt-10 mb-6 '>
-        <div className='bg-blue-400 rounded-lg p-3 items-center'>
+      <div className="w-full flex items-center justify-evenly mt-10 mb-6 ">
+        <div className="bg-blue-400 rounded-lg p-3 items-center">
           {buddy?.schemas.map(({ id, attributes }, index) => {
             return (
               <button
@@ -152,9 +76,9 @@ export const HomePage = () => {
             );
           })}
         </div>
-        <div className='bg-blue-400 rounded-lg p-3'>
+        <div className="bg-blue-400 rounded-lg p-3">
           <button
-            className='btn'
+            className="btn"
             onClick={() =>
               saveSchema(
                 buddy?.currentlyEditingSchema,
@@ -176,12 +100,12 @@ export const HomePage = () => {
           </button>
         </div>
 
-        <div className='flex justify-between items-center bg-blue-400 rounded-lg p-3'>
-          <label className='font-mono font-bold text-[20px]'>Show schema</label>
+        <div className="flex justify-between items-center bg-blue-400 rounded-lg p-3">
+          <label className="font-mono font-bold text-[20px]">Show schema</label>
           <input
-            type='checkbox'
+            type="checkbox"
             checked={showSchema}
-            className='toggle toggle-primary m-auto ml-5 '
+            className="toggle toggle-primary m-auto ml-5 "
             onChange={() => setShowSchema(!showSchema)}
           />
         </div>
@@ -192,33 +116,12 @@ export const HomePage = () => {
         }`}
       >
         <div>
-          <div className='max-w-screen-lg m-auto'>
-            {/* {(!buddy?.buddy || buddy.schemas.length === 0) && (
-              <button className='btn' onClick={() => setShowModal(!showModal)}>
-                {showModal ? "Close" : "Add use case"}
-              </button>
-            )} */}
-          </div>
-          {/* {showModal && <EditingModal closeModal={closeModal} />} */}
+          <div className="max-w-screen-lg m-auto"></div>
           <UseCases />
         </div>
-        <div className=''>{showSchema && <Schema />}</div>
+        <div className="">{showSchema && <Schema />}</div>
       </div>
-      <div
-        id='treeWrapper'
-        style={{
-          width: "100vw",
-          height: "50em",
-          backgroundColor: "red",
-          borderRadius: "10px",
-        }}
-      >
-        <Tree
-          data={d3Tree}
-          initialDepth={1}
-          renderCustomNodeElement={rednerCustom}
-        ></Tree>
-      </div>
+      <D3Tree d3Tree={d3Tree} />
     </>
   );
 };
