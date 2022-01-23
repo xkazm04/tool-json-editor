@@ -86,7 +86,7 @@ export const UseCaseEditSection = ({
 
   return (
     <div className='max-w-screen-lg m-auto min-h-[300px] bg-glass  rounded-lg my-5 p-5 relative'>
-      <div className='grid grid-cols-[70%_20%] gap-5 '>
+      <div className='grid grid-cols-[70%_20%] gap-5'>
         <Editable
           useCaseType={"input"}
           text={label.value}

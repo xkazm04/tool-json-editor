@@ -7,12 +7,12 @@ function App() {
   const buddy = useBuddyContext();
 
   return (
-    <BuddyContext.Provider value={buddy}>
-      <div className=' bg-gradient-primary pb-20 px-5 min-h-screen'>
-        <HomePage />
-      </div>
-      <Notification />
-    </BuddyContext.Provider>
+      <BuddyContext.Provider value={buddy}>
+        <div className=' bg-gradient-primary pb-20 px-5 min-h-screen'>
+          <HomePage />
+        </div>
+        <Notification />
+      </BuddyContext.Provider>
   );
 }
 

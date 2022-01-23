@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useBuddy } from "../providers/Buddy";
 import { BuddyBuilderType } from "../types";
 import { CodeSnippet } from "./CodeSnippet";
 import { CodeSnippetEditSection } from "./CodeSnippetEditSection";
@@ -11,10 +10,10 @@ interface OwnProps {
 
 export const CodeSnippetCard = ({ inputIndex, codeSnippet }: OwnProps) => {
   const [openEditSection, setOpenEditSection] = useState(false);
-  const buddy = useBuddy();
   const { description, chatbotID, value, label } = codeSnippet;
+
   const closeEditSection = () => setOpenEditSection(false);
-  console.log("infsdfs", codeSnippet.id);
+
   return (
     <>
       <div className='max-w-screen-lg m-auto bg-glass rounded-lg p-5  grid grid-cols-[50%_50%] justify-center items-center my-5 w-full'>

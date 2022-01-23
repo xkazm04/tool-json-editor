@@ -34,7 +34,7 @@ export const BuddyEditorControllers = ({
       </div>
       <div className='bg-glass rounded-md p-3'>
         <button
-          className='btn '
+          className='btn'
           onClick={() =>
             saveSchema(
               buddy?.currentlyEditingSchema,

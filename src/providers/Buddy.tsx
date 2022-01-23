@@ -43,8 +43,6 @@ export type FunctionParams = {
   };
 };
 
-
-
 interface BuddyContextType {
   buddy: BuddyBuilderType | null;
   inputs: BuddyBuilderType[] | [];
@@ -60,10 +58,7 @@ interface BuddyContextType {
     onFinish?: () => void
   ) => void;
   selectOption: (id: string, selectIndex: number) => void;
-  editUseCaseValue: (
-    changingValue: Partial<EditingValues>,
-    id: string
-  ) => void;
+  editUseCaseValue: (changingValue: Partial<EditingValues>, id: string) => void;
 
   deleteUseCase: (id: string, buddy: BuddyBuilderType | null) => void;
   setActiveSchema: (id: number) => void;
@@ -119,10 +114,10 @@ export const useBuddyContext = (): BuddyContextType => {
 
   const setActiveSchema = (id: number) => {
     const activeSchema = schemas.find((schema) => schema.id === id);
-
     if (activeSchema) {
       setBuddy(activeSchema.attributes.Tree);
       setCurrentlyEditingSchema(activeSchema.id);
+      console.log("function is called");
     }
   };
 
@@ -172,7 +167,6 @@ export const useBuddyContext = (): BuddyContextType => {
     const editedBuddy = edit(buddy);
     setBuddy((prev) => ({ ...prev, ...editedBuddy }));
   };
-
 
   const handlePreviousSelectChange = (selectIndex: number, id: string) => {
     const validInputs = inputs.slice(0, selectIndex + 1);
@@ -251,6 +245,7 @@ export const useBuddyContext = (): BuddyContextType => {
             label: values.label,
             value: (values as FunctionParams["code snippet"]).value,
           });
+
     const traverseBuddy = (buddy: BuddyBuilderType): BuddyBuilderType => {
       let current: any = buddy;
 

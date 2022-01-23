@@ -4,6 +4,7 @@ import { D3Tree } from "../components/D3Tree";
 import { Tabs } from "../components/Tabs";
 import { useBuddy } from "../providers/Buddy";
 import { BuddyBuilderType } from "../types";
+import { deepClone } from "../utils/deepClone";
 
 export const HomePage = () => {
   const buddy = useBuddy();
@@ -11,18 +12,6 @@ export const HomePage = () => {
     "Editor"
   );
   const [d3Tree, setD3Tree] = useState<any>({});
-
-  const deepClone = (buddy: BuddyBuilderType, cloned: {} = {}) => {
-    const deeplyCloned = cloned;
-    for (let [key, value] of Object.entries(buddy)) {
-      if (Array.isArray(value)) {
-        (deeplyCloned as any)[key] = value.map((v) => deepClone(v, {}));
-      } else {
-        (deeplyCloned as any)[key] = value;
-      }
-    }
-    return deeplyCloned;
-  };
 
   const convertToD3CompatibleTree = (buddy: BuddyBuilderType) => {
     const deeplyClonedBuddy = deepClone(buddy);
