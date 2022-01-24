@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BuddyBuilderType } from "../types";
 import { createCodeSnippet } from "../utils/createCodeSnippet";
 import { createUseCase } from "../utils/createUseCase";
+import { deepClone } from "../utils/deepClone";
 import { getSchemas } from "../utils/schemaAPI";
 
 interface SchemaAttributes {
@@ -117,7 +118,6 @@ export const useBuddyContext = (): BuddyContextType => {
     if (activeSchema) {
       setBuddy(activeSchema.attributes.Tree);
       setCurrentlyEditingSchema(activeSchema.id);
-      console.log("function is called");
     }
   };
 
@@ -233,45 +233,79 @@ export const useBuddyContext = (): BuddyContextType => {
     values: FunctionParams["code snippet"] | FunctionParams["input"],
     onFinish?: () => void
   ) => {
-    const newUseCaseOption =
+    const newUseCaseOption: BuddyBuilderType =
       useCaseType === "input"
-        ? createUseCase({
+        ? (createUseCase({
             optionValue: (values as FunctionParams["input"]).optionValue,
             label: (values as FunctionParams["input"]).label,
-          })
-        : createCodeSnippet({
+          }) as BuddyBuilderType)
+        : (createCodeSnippet({
             description: (values as FunctionParams["code snippet"]).description,
             chatbotID: (values as FunctionParams["code snippet"]).chatbotID,
             label: values.label,
             value: (values as FunctionParams["code snippet"]).value,
-          });
+          }) as BuddyBuilderType);
 
-    const traverseBuddy = (buddy: BuddyBuilderType): BuddyBuilderType => {
-      let current: any = buddy;
+    const current = deepClone(buddy as BuddyBuilderType);
+    const queue = [];
+    queue.push(current);
 
-      for (let [key, value] of Object.entries(buddy)) {
-        if (typeof value === "string") {
-          current[key as keyof BuddyBuilderType] = value;
-        }
-        if (Array.isArray(value)) {
-          if (current.id === useCaseID) {
-            current[key] = [
-              ...(value as Array<BuddyBuilderType>),
-              newUseCaseOption,
-            ];
-          } else {
-            current[key as keyof BuddyBuilderType] = value.map(
-              (child: BuddyBuilderType) => traverseBuddy(child)
-            );
-          }
-        }
+    while (queue.length > 0) {
+      const currentNode = queue.shift();
+      if (currentNode?.id === useCaseID) {
+        (currentNode.children as any).push(newUseCaseOption);
+      } else {
+        currentNode?.children.forEach((child) => queue.push(child));
       }
-      return current as BuddyBuilderType;
-    };
-    const updatedBuddy = traverseBuddy(buddy as BuddyBuilderType);
-    setBuddy((prev) => ({ ...prev, ...updatedBuddy }));
+    }
+    setBuddy(current);
     onFinish && onFinish();
   };
+
+  // const addUseCaseOption = (
+  //   useCaseType: BuddyBuilderType["useCaseType"],
+  //   useCaseID: string,
+  //   values: FunctionParams["code snippet"] | FunctionParams["input"],
+  //   onFinish?: () => void
+  // ) => {
+  //   const newUseCaseOption =
+  //     useCaseType === "input"
+  //       ? createUseCase({
+  //           optionValue: (values as FunctionParams["input"]).optionValue,
+  //           label: (values as FunctionParams["input"]).label,
+  //         })
+  //       : createCodeSnippet({
+  //           description: (values as FunctionParams["code snippet"]).description,
+  //           chatbotID: (values as FunctionParams["code snippet"]).chatbotID,
+  //           label: values.label,
+  //           value: (values as FunctionParams["code snippet"]).value,
+  //         });
+
+  //   const traverseBuddy = (buddy: BuddyBuilderType): BuddyBuilderType => {
+  //     let current: any = buddy;
+  //     for (let [key, value] of Object.entries(buddy)) {
+  //       if (typeof value === "string") {
+  //         current[key as keyof BuddyBuilderType] = value;
+  //       }
+  //       if (Array.isArray(value)) {
+  //         if (current.id === useCaseID) {
+  //           current[key] = [
+  //             ...(value as Array<BuddyBuilderType>),
+  //             newUseCaseOption,
+  //           ];
+  //         } else {
+  //           current[key as keyof BuddyBuilderType] = value.map(
+  //             (child: BuddyBuilderType) => traverseBuddy(child)
+  //           );
+  //         }
+  //       }
+  //     }
+  //     return current as BuddyBuilderType;
+  //   };
+  //   const updatedBuddy = traverseBuddy(buddy as BuddyBuilderType);
+  //   setBuddy((prev) => ({ ...prev, ...updatedBuddy }));
+  //   onFinish && onFinish();
+  // };
 
   useEffect(() => {
     if (!buddy) return;
