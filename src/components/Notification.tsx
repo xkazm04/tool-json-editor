@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { NotificationType, useBuddy } from "../providers/Buddy";
 
 export const Notification = () => {
-  const hideTimeout = 5000;
+  const hideTimeout = 4000;
   const notificationStore = useBuddy();
   const [notification, setNotification] = useState<NotificationType | null>(
     null
@@ -28,14 +28,17 @@ export const Notification = () => {
       hideAlert(hideTimeout);
     }
   }, [notificationStore]);
+  console.log(notification?.type);
 
   return (
     <>
-      {open && notification && (
+      {open && (
         <div
-          className={`fixed top-0 left-[50%] transform -translate-x-[50%] font-extrabold text-xl z-50   alert alert-${notification.type}`}
+          className={`fixed bottom-10 left-[50%] text-xl p-6 transform -translate-x-[50%] font-bold  z-50   alert ${
+            notification?.type === "success" ? "alert-success" : "alert-error"
+          }`}
         >
-          <div className='flex-1'>
+          <div className="flex-1">
             <label>{notification?.message}</label>
           </div>
         </div>

@@ -52,7 +52,7 @@ export const HomePage = () => {
   }
   return (
     <>
-      <div className='w-full flex items-center justify-evenly  mb-6 '></div>
+      <div className="w-full flex items-center justify-evenly   "></div>
       <Tabs
         activeTab={activeTab}
         tabs={["Editor", "Tree respresentation"]}

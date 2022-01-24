@@ -9,7 +9,7 @@ type OwnProps = {
 
 export const Tabs = ({ tabs, activeTab, onTabClick }: OwnProps) => {
   return (
-    <div className='flex bg-glass rounded-t-lg justify-evenly items-center w-full  mb-5'>
+    <div className="flex bg-glass rounded-t-lg justify-evenly items-center w-full  mb-5">
       {tabs.map((tab, index) => {
         return (
           <div
