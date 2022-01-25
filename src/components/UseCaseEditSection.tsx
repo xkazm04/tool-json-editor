@@ -41,6 +41,14 @@ export const UseCaseEditSection = ({
 
   const buddy = useBuddy();
 
+  const handleUseCaseDelete = (id: string) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete the use case?"
+    );
+    if (!confirmed) return;
+    buddy?.deleteUseCase(id);
+  };
+
   const handleOptionChange = (
     e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     id: string
@@ -124,7 +132,7 @@ export const UseCaseEditSection = ({
                 }
                 label={label}
                 text={value}
-                onUseCaseDelete={() => buddy?.deleteUseCase(id)}
+                onUseCaseDelete={() => handleUseCaseDelete(id)}
               >
                 {useCaseType === "input" ? (
                   <Input
