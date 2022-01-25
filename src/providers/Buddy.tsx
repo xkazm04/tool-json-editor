@@ -61,7 +61,7 @@ interface BuddyContextType {
   selectOption: (id: string, selectIndex: number) => void;
   editUseCaseValue: (changingValue: Partial<EditingValues>, id: string) => void;
 
-  deleteUseCase: (id: string, buddy: BuddyBuilderType | null) => void;
+  deleteUseCase: (id: string) => void;
   setActiveSchema: (id: number) => void;
   notifications: NotificationType[];
   addNotification: (type: "error" | "success", message: string) => void;
@@ -121,47 +121,45 @@ export const useBuddyContext = (): BuddyContextType => {
     }
   };
 
-  // const deleteUseCase = (id: string, buddy: BuddyBuilderType | null) => {
-  //   console.log("is clickeds", buddy);
-  //   let current = deepClone(buddy as BuddyBuilderType);
-  //   const queue = [];
-  //   queue.push(current);
+  const deleteUseCase = (id: string) => {
+    let current = deepClone(buddy as BuddyBuilderType);
+    const queue = [];
+    queue.push(current);
 
-  //   while (queue.length > 0) {
-  //     let сurrentNode = queue.shift();
-  //     const filtered = сurrentNode?.children.filter((child) => child.id !== id);
-  //     if (filtered?.length !== сurrentNode?.children.length) {
-  //       (сurrentNode as any).children = filtered;
-  //       console.log(current);
-  //       setBuddy((prev) => ({ ...prev, ...current }));
-
-  //       return;
-  //     } else {
-  //       сurrentNode?.children.forEach((child) => queue.push(child));
-  //     }
-  //   }
-  // };
-
-  const deleteUseCase = (id: string, buddy: BuddyBuilderType | null) => {
-    const deleteCase = (buddy: BuddyBuilderType | null) => {
-      if (!id || !buddy) return;
-      const current: any = buddy;
-
-      for (let [key, value] of Object.entries(current)) {
-        if (typeof key === "string") {
-          current[key as keyof BuddyBuilderType] = value;
-        }
-        if (Array.isArray(value)) {
-          current[key] = (value as BuddyBuilderType["children"])
-            .filter((v) => v.id !== id)
-            .map((v) => deleteCase(v));
-        }
+    while (queue.length > 0) {
+      let сurrentNode = queue.shift();
+      const filtered = сurrentNode?.children.filter((child) => child.id !== id);
+      if (filtered?.length !== сurrentNode?.children.length) {
+        (сurrentNode as any).children = filtered;
+        console.log(current);
+        setBuddy((prev) => ({ ...prev, ...current }));
+        return;
+      } else {
+        сurrentNode?.children.forEach((child) => queue.push(child));
       }
-      return current;
-    };
-    const withoutDeletedUseCase = deleteCase(buddy);
-    setBuddy((prev) => ({ ...prev, ...withoutDeletedUseCase }));
+    }
   };
+
+  // const deleteUseCase = (id: string, buddy: BuddyBuilderType | null) => {
+  //   const deleteCase = (buddy: BuddyBuilderType | null) => {
+  //     if (!id || !buddy) return;
+  //     const current: any = buddy;
+
+  //     for (let [key, value] of Object.entries(current)) {
+  //       if (typeof key === "string") {
+  //         current[key as keyof BuddyBuilderType] = value;
+  //       }
+  //       if (Array.isArray(value)) {
+  //         current[key] = (value as BuddyBuilderType["children"])
+  //           .filter((v) => v.id !== id)
+  //           .map((v) => deleteCase(v));
+  //       }
+  //     }
+  //     return current;
+  //   };
+  //   const withoutDeletedUseCase = deleteCase(buddy);
+  //   setBuddy((prev) => ({ ...prev, ...withoutDeletedUseCase }));
+  // };
 
   const editUseCaseValue = (
     changingValue: Partial<EditingValues>,

@@ -85,12 +85,12 @@ export const UseCaseEditSection = ({
     .every((value) => value !== "".trim());
 
   return (
-    <div className='max-w-screen-lg m-auto min-h-[300px] bg-glass  rounded-lg my-5 p-5 relative'>
-      <div className='grid grid-cols-[70%_20%] gap-5'>
+    <div className="max-w-screen-lg m-auto min-h-[300px] bg-glass  rounded-lg my-5 p-5 relative">
+      <div className="grid grid-cols-[70%_20%] gap-5">
         <Editable
           useCaseType={"input"}
           text={label.value}
-          label='Label for group of inputs'
+          label="Label for group of inputs"
           onUseCaseSave={() => {
             buddy?.editUseCaseValue({ label: label.value }, id);
             setLabel((prev) => ({ ...prev, isEditing: false }));
@@ -98,7 +98,7 @@ export const UseCaseEditSection = ({
         >
           <Input
             ref={labelInputRef}
-            labelText='Label for group of inputs'
+            labelText="Label for group of inputs"
             value={label.value}
             onChange={(e) =>
               setLabel((prev) => ({
@@ -109,11 +109,11 @@ export const UseCaseEditSection = ({
           />
         </Editable>
       </div>
-      <div className='divider'></div>
+      <div className="divider"></div>
       {options.length > 0 &&
         options.map(({ label, value, id, useCaseType }, index) => {
           return (
-            <div key={index} className='p-2 bg-glass my-2 rounded-xl'>
+            <div key={index} className="p-2 bg-glass my-2 rounded-xl">
               <Editable
                 useCaseType={useCaseType}
                 onUseCaseSave={() =>
@@ -124,7 +124,7 @@ export const UseCaseEditSection = ({
                 }
                 label={label}
                 text={value}
-                onUseCaseDelete={() => buddy?.deleteUseCase(id, buddy?.buddy)}
+                onUseCaseDelete={() => buddy?.deleteUseCase(id)}
               >
                 {useCaseType === "input" ? (
                   <Input
@@ -152,7 +152,7 @@ export const UseCaseEditSection = ({
             setNewInput((prev) => ({ ...prev, value: "", visible: false }));
           }}
         >
-          <div className='flex items-center justify-between'>
+          <div className="flex items-center justify-between">
             <Input
               ref={newInputRef}
               value={newInput.value}
@@ -163,11 +163,11 @@ export const UseCaseEditSection = ({
                 }))
               }
             />
-            <div className='self-end'>
+            <div className="self-end">
               <button
                 disabled={newInput.value === ""}
-                type='submit'
-                className='btn '
+                type="submit"
+                className="btn "
               >
                 Confirm
               </button>
@@ -179,7 +179,7 @@ export const UseCaseEditSection = ({
                     visible: false,
                   }))
                 }
-                className='btn ml-4'
+                className="btn ml-4"
               >
                 Cancel
               </button>
@@ -188,7 +188,7 @@ export const UseCaseEditSection = ({
         </form>
       )}
       {codeSnippet.visible && (
-        <div className='grid grid-cols-[70%_20%] gap-x-10'>
+        <div className="grid grid-cols-[70%_20%] gap-x-10">
           <div>
             <Input
               value={codeSnippet.description}
@@ -198,7 +198,7 @@ export const UseCaseEditSection = ({
                   description: (e.target as HTMLInputElement).value,
                 }))
               }
-              labelText='Description'
+              labelText="Description"
             />
             <Input
               onChange={(e) =>
@@ -208,7 +208,7 @@ export const UseCaseEditSection = ({
                 }))
               }
               value={codeSnippet.chatbotId}
-              labelText='ChabotId'
+              labelText="ChabotId"
             />
             <TextArea
               value={codeSnippet.codeExample}
@@ -220,7 +220,7 @@ export const UseCaseEditSection = ({
               }
             />
           </div>
-          <div className='justify-self-end self-end'>
+          <div className="justify-self-end self-end">
             <button
               disabled={!validCodeSnippetsValue}
               onClick={() => {
@@ -241,8 +241,8 @@ export const UseCaseEditSection = ({
                     }))
                 );
               }}
-              type='submit'
-              className='btn w-full '
+              type="submit"
+              className="btn w-full "
             >
               Save
             </button>
@@ -254,7 +254,7 @@ export const UseCaseEditSection = ({
                   value: "",
                 }))
               }
-              className='btn w-full mt-2'
+              className="btn w-full mt-2"
             >
               Cancel
             </button>
@@ -266,7 +266,7 @@ export const UseCaseEditSection = ({
         codeSnippet.visible ||
         newInput.visible ? null : (
           <button
-            className='btn my-3'
+            className="btn my-3"
             onClick={() => setNewInput((prev) => ({ ...prev, visible: true }))}
           >
             Add option
@@ -274,7 +274,7 @@ export const UseCaseEditSection = ({
         )}
         {options?.length === 0 && !codeSnippet.visible && !newInput.visible && (
           <button
-            className='btn my-3 ml-5'
+            className="btn my-3 ml-5"
             onClick={() =>
               setCodeSnippet((prev) => ({ ...prev, visible: true }))
             }
@@ -285,7 +285,7 @@ export const UseCaseEditSection = ({
       </div>
       <BsFillXCircleFill
         onClick={closeEditSection}
-        className='absolute top-4 right-4 scale-150 cursor-pointer'
+        className="absolute top-4 right-4 scale-150 cursor-pointer"
       />
     </div>
   );
