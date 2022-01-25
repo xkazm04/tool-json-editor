@@ -28,7 +28,6 @@ export const Notification = () => {
       hideAlert(hideTimeout);
     }
   }, [notificationStore]);
-  console.log(notification?.type);
 
   return (
     <>

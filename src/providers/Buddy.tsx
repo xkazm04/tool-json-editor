@@ -121,6 +121,27 @@ export const useBuddyContext = (): BuddyContextType => {
     }
   };
 
+  // const deleteUseCase = (id: string, buddy: BuddyBuilderType | null) => {
+  //   console.log("is clickeds", buddy);
+  //   let current = deepClone(buddy as BuddyBuilderType);
+  //   const queue = [];
+  //   queue.push(current);
+
+  //   while (queue.length > 0) {
+  //     let сurrentNode = queue.shift();
+  //     const filtered = сurrentNode?.children.filter((child) => child.id !== id);
+  //     if (filtered?.length !== сurrentNode?.children.length) {
+  //       (сurrentNode as any).children = filtered;
+  //       console.log(current);
+  //       setBuddy((prev) => ({ ...prev, ...current }));
+
+  //       return;
+  //     } else {
+  //       сurrentNode?.children.forEach((child) => queue.push(child));
+  //     }
+  //   }
+  // };
+
   const deleteUseCase = (id: string, buddy: BuddyBuilderType | null) => {
     const deleteCase = (buddy: BuddyBuilderType | null) => {
       if (!id || !buddy) return;

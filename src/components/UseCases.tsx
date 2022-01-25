@@ -10,14 +10,14 @@ export const UseCases = (): JSX.Element => {
       {buddy?.inputs &&
         buddy.inputs.map((input, index) => {
           if (
-            input.children.length > 0 &&
-            input.children[0]["useCaseType"] === "code snippet"
+            input?.children.length > 0 &&
+            input?.children[0]["useCaseType"] === "code snippet"
           ) {
             return (
               <CodeSnippetCard
                 key={index}
                 inputIndex={index}
-                codeSnippet={input.children[0]}
+                codeSnippet={input?.children[0]}
               />
             );
           }
