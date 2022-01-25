@@ -24,6 +24,15 @@
       #2b86c5 100%
     );
   }
+
+  .bg-dark-mode-gradient {
+    @apply bg-gradient-to-l from-[#141E30] to-[#243B55];
+  }
+
+  .button-gradient-bg {
+    @apply bg-gradient-to-r from-[#f2709c] to-[#ff9472];
+  }
+
   .bg-glass {
     /* From https://css.glass */
     background: rgba(255, 255, 255, 0.07);

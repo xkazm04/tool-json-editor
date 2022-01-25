@@ -12,6 +12,15 @@ export const HomePage = () => {
     "Editor"
   );
   const [d3Tree, setD3Tree] = useState<any>({});
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [darkMode]);
 
   const convertToD3CompatibleTree = (buddy: BuddyBuilderType) => {
     const deeplyClonedBuddy = deepClone(buddy);
@@ -59,6 +68,14 @@ export const HomePage = () => {
         onTabClick={handleTabChange}
       />
       {activeTab === "Editor" ? <BuddyEditor /> : <D3Tree d3Tree={d3Tree} />}
+      <button
+        onClick={() => setDarkMode(!darkMode)}
+        className={`btn rounded-xl ${
+          darkMode ? "bg-slate-200 text-slate-600 hover:bg-slate-300" : ""
+        } fixed bottom-5 left-5`}
+      >
+        {darkMode ? "Light mode" : "Dark theme"}
+      </button>
     </>
   );
 };
