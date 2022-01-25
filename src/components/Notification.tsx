@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { NotificationType, useBuddy } from "../providers/Buddy";
 
 export const Notification = () => {
@@ -11,13 +11,16 @@ export const Notification = () => {
   const [open, setOpen] = useState(false);
   const hideTimer = useRef<any>(null);
 
-  const hideAlert = (timer: number) => {
-    clearTimeout(hideTimer.current);
-    hideTimer.current = setTimeout(() => {
-      setOpen(false);
-      notificationStore?.deleteNotifications();
-    }, timer);
-  };
+  const hideAlert = useCallback(
+    (timer: number) => {
+      clearTimeout(hideTimer.current);
+      hideTimer.current = setTimeout(() => {
+        setOpen(false);
+        notificationStore?.deleteNotifications();
+      }, timer);
+    },
+    [notificationStore]
+  );
 
   useEffect(() => {
     if (notificationStore!.notifications.length > 0) {
@@ -27,7 +30,7 @@ export const Notification = () => {
       setOpen(true);
       hideAlert(hideTimeout);
     }
-  }, [notificationStore]);
+  }, [notificationStore, hideAlert]);
 
   return (
     <>
@@ -37,7 +40,7 @@ export const Notification = () => {
             notification?.type === "success" ? "alert-success" : "alert-error"
           }`}
         >
-          <div className="flex-1">
+          <div className='flex-1'>
             <label>{notification?.message}</label>
           </div>
         </div>
