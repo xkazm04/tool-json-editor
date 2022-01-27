@@ -24,32 +24,32 @@ export const CodeSnippetEditSection = ({
     codeExample: value,
   });
   return (
-    <div className='max-w-screen-lg m-auto min-h-[300px] bg-glass rounded-lg my-5 p-5 relative'>
+    <div className="max-w-screen-lg m-auto min-h-[300px] bg-glass rounded-lg my-5 p-5 relative">
       <div>
         <Editable
           useCaseType={"input"}
           text={codeSnippet.label || "-"}
-          label='Label for group of inputs'
+          label="Label for group of inputs"
           onUseCaseSave={() => {
             buddy?.editUseCaseValue({ label: labelValue }, id);
           }}
         >
           <Input
             ref={labelInputRef}
-            labelText='Label for group of inputs'
-            value={codeSnippet.label}
+            labelText="Label for group of inputs"
+            value={labelValue}
             onChange={(e) =>
               setLabelValue((e.target as HTMLInputElement).value)
             }
           />
         </Editable>
       </div>
-      <div className='divider'></div>
+      <div className="divider"></div>
       <div>
         <Editable
           useCaseType={"input"}
           text={description ? description : ""}
-          label='Description'
+          label="Description"
           onUseCaseSave={() => {
             buddy?.editUseCaseValue(
               { description: codeSnippet.description },
@@ -58,7 +58,7 @@ export const CodeSnippetEditSection = ({
           }}
         >
           <Input
-            labelText='Description'
+            labelText="Description"
             value={codeSnippet.description}
             onChange={(e) =>
               setCodeSnippet((prev) => ({
@@ -73,13 +73,13 @@ export const CodeSnippetEditSection = ({
         <Editable
           useCaseType={"input"}
           text={chatbotID ? chatbotID : ""}
-          label='Charbot ID'
+          label="Charbot ID"
           onUseCaseSave={() => {
             buddy?.editUseCaseValue({ chatbotID: codeSnippet.chatbotID }, id);
           }}
         >
           <Input
-            labelText='Chatbot ID'
+            labelText="Chatbot ID"
             value={codeSnippet.chatbotID}
             onChange={(e) =>
               setCodeSnippet((prev) => ({
@@ -94,7 +94,7 @@ export const CodeSnippetEditSection = ({
         <Editable
           useCaseType={"code snippet"}
           text={value}
-          label='Code example'
+          label="Code example"
           onUseCaseSave={() => {
             buddy?.editUseCaseValue({ value: codeSnippet.codeExample }, id);
           }}

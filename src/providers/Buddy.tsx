@@ -131,7 +131,6 @@ export const useBuddyContext = (): BuddyContextType => {
       const filtered = сurrentNode?.children.filter((child) => child.id !== id);
       if (filtered?.length !== сurrentNode?.children.length) {
         (сurrentNode as any).children = filtered;
-        console.log(current);
         setBuddy((prev) => ({ ...prev, ...current }));
         return;
       } else {
