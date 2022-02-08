@@ -23,7 +23,7 @@ export const saveSchema = async (
     },
     body: JSON.stringify({
       data: {
-        Tree: buddy,
+        tree: buddy,
       },
     }),
   })
