@@ -6,4 +6,5 @@ export interface BuddyBuilderType {
   children: BuddyBuilderType[] | [];
   description?: string;
   chatbotID?: string;
+  linkToDocs?: string;
 }

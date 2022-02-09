@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import { BsFillXCircleFill } from "react-icons/bs";
-import { useBuddy } from "../providers/Buddy";
-import { BuddyBuilderType } from "../types";
-import { Editable } from "./Editable";
-import { Input } from "./Input";
-import { TextArea } from "./TextArea";
+import React, { useEffect, useRef, useState } from 'react';
+import { BsFillXCircleFill } from 'react-icons/bs';
+import { useBuddy } from '../providers/Buddy';
+import { BuddyBuilderType } from '../types';
+import { Editable } from './Editable';
+import { Input } from './Input';
+import { TextArea } from './TextArea';
 
 interface OwnProps {
   input: BuddyBuilderType;
@@ -18,32 +18,33 @@ export const UseCaseEditSection = ({
   const [label, setLabel] = useState<{
     value: string;
     isEditing: boolean;
-  }>({ value: "", isEditing: false });
+  }>({ value: '', isEditing: false });
 
   const labelInputRef = useRef<HTMLInputElement | null>(null);
   const newInputRef = useRef<HTMLInputElement | null>(null);
-  const [newInput, setNewInput] = useState({ visible: false, value: "" });
+  const [newInput, setNewInput] = useState({ visible: false, value: '' });
   const [options, setOptions] = useState<
     | {
         value: string;
         id: string;
         label: string;
-        useCaseType: "input" | "code snippet";
+        useCaseType: 'input' | 'code snippet';
       }[]
     | []
   >([]);
   const [codeSnippet, setCodeSnippet] = useState({
     visible: false,
-    codeExample: "",
-    description: "",
-    chatbotId: "",
+    codeExample: '',
+    description: '',
+    chatbotId: '',
+    linkToDocs: '',
   });
 
   const buddy = useBuddy();
 
   const handleUseCaseDelete = (id: string) => {
     const confirmed = window.confirm(
-      "Are you sure you want to delete the use case?"
+      'Are you sure you want to delete the use case?'
     );
     if (!confirmed) return;
     buddy?.deleteUseCase(id);
@@ -88,15 +89,21 @@ export const UseCaseEditSection = ({
     setLabel((prev) => ({ ...prev, value: labelValue }));
   }, [labelValue]);
 
-  const validCodeSnippetsValue = Object.values(codeSnippet)
-    .filter((value) => typeof value === "string")
-    .every((value) => value !== "".trim());
+  const inputsAreValid = () => {
+    const inputsValues = [];
+    for (let [key, value] of Object.entries(codeSnippet)) {
+      if (key !== 'chatbotId' && key !== 'linkToDocs') {
+        inputsValues.push(value);
+      }
+    }
+    return inputsValues.every((value) => value !== ''.trim());
+  };
 
   return (
     <div className="max-w-screen-lg m-auto min-h-[300px] bg-glass  rounded-lg my-5 p-5 relative">
       <div className="grid grid-cols-[70%_20%] gap-5">
         <Editable
-          useCaseType={"input"}
+          useCaseType={'input'}
           text={label.value}
           label="Label for group of inputs"
           onUseCaseSave={() => {
@@ -126,7 +133,7 @@ export const UseCaseEditSection = ({
                 useCaseType={useCaseType}
                 onUseCaseSave={() =>
                   buddy?.editUseCaseValue(
-                    { value: options[index]["value"] },
+                    { value: options[index]['value'] },
                     id
                   )
                 }
@@ -134,7 +141,7 @@ export const UseCaseEditSection = ({
                 text={value}
                 onUseCaseDelete={() => handleUseCaseDelete(id)}
               >
-                {useCaseType === "input" ? (
+                {useCaseType === 'input' ? (
                   <Input
                     labelText={label}
                     value={value}
@@ -142,6 +149,7 @@ export const UseCaseEditSection = ({
                   />
                 ) : (
                   <TextArea
+                    label=""
                     value={value}
                     onChange={(e) => handleOptionChange(e, id)}
                   />
@@ -153,15 +161,16 @@ export const UseCaseEditSection = ({
       {newInput.visible && (
         <form
           onSubmit={() => {
-            buddy?.addUseCaseOption("input", id, {
+            buddy?.addUseCaseOption('input', id, {
               optionValue: newInput.value,
-              label: "",
+              label: '',
             });
-            setNewInput((prev) => ({ ...prev, value: "", visible: false }));
+            setNewInput((prev) => ({ ...prev, value: '', visible: false }));
           }}
         >
-          <div className="flex items-center justify-between">
+          <div className="flex w-full items-center justify-between">
             <Input
+              className="w-9/12"
               ref={newInputRef}
               value={newInput.value}
               onChange={(e) =>
@@ -171,11 +180,11 @@ export const UseCaseEditSection = ({
                 }))
               }
             />
-            <div className="self-end">
+            <div className="justify-self-center flex flex-col">
               <button
-                disabled={newInput.value === ""}
+                disabled={newInput.value === ''}
                 type="submit"
-                className="btn "
+                className="btn btn-sm mb-1"
               >
                 Confirm
               </button>
@@ -183,11 +192,11 @@ export const UseCaseEditSection = ({
                 onClick={() =>
                   setNewInput((prev) => ({
                     ...prev,
-                    value: "",
+                    value: '',
                     visible: false,
                   }))
                 }
-                className="btn ml-4"
+                className="btn btn-sm"
               >
                 Cancel
               </button>
@@ -198,7 +207,7 @@ export const UseCaseEditSection = ({
       {codeSnippet.visible && (
         <div className="grid grid-cols-[70%_20%] gap-x-10">
           <div>
-            <Input
+            <TextArea
               value={codeSnippet.description}
               onChange={(e) =>
                 setCodeSnippet((prev) => ({
@@ -206,9 +215,9 @@ export const UseCaseEditSection = ({
                   description: (e.target as HTMLInputElement).value,
                 }))
               }
-              labelText="Description"
+              label="Description"
             />
-            <Input
+            <TextArea
               onChange={(e) =>
                 setCodeSnippet((prev) => ({
                   ...prev,
@@ -216,7 +225,7 @@ export const UseCaseEditSection = ({
                 }))
               }
               value={codeSnippet.chatbotId}
-              labelText="ChabotId"
+              label="Chatbot ID"
             />
             <TextArea
               value={codeSnippet.codeExample}
@@ -226,26 +235,38 @@ export const UseCaseEditSection = ({
                   codeExample: (e.target as HTMLTextAreaElement).value,
                 }))
               }
+              label="Code example"
+            />
+            <Input
+              value={codeSnippet.linkToDocs}
+              onChange={(e) =>
+                setCodeSnippet((prev) => ({
+                  ...prev,
+                  linkToDocs: (e.target as HTMLInputElement).value,
+                }))
+              }
+              labelText="Link to documentation"
             />
           </div>
           <div className="justify-self-end self-end">
             <button
-              disabled={!validCodeSnippetsValue}
+              disabled={!inputsAreValid()}
               onClick={() => {
                 buddy?.addUseCaseOption(
-                  "code snippet",
+                  'code snippet',
                   id,
                   {
                     description: codeSnippet.description,
                     chatbotID: codeSnippet.chatbotId,
                     label: label.value,
                     value: codeSnippet.codeExample,
+                    linkToDocs: codeSnippet.linkToDocs
                   },
                   () =>
                     setCodeSnippet((prev) => ({
                       ...prev,
                       visible: false,
-                      value: "",
+                      value: '',
                     }))
                 );
               }}
@@ -259,7 +280,7 @@ export const UseCaseEditSection = ({
                 setCodeSnippet((prev) => ({
                   ...prev,
                   visible: false,
-                  value: "",
+                  value: '',
                 }))
               }
               className="btn w-full mt-2"
@@ -270,7 +291,7 @@ export const UseCaseEditSection = ({
         </div>
       )}
       <div>
-        {(options.length > 0 && options[0]["useCaseType"] === "code snippet") ||
+        {(options.length > 0 && options[0]['useCaseType'] === 'code snippet') ||
         codeSnippet.visible ||
         newInput.visible ? null : (
           <button

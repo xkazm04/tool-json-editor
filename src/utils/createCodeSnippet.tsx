@@ -25,6 +25,7 @@ export const createCodeSnippet = ({
   value,
   chatbotID,
   label,
+  linkToDocs
 }: FunctionParams["code snippet"]): BuddyBuilderType => {
   const useCase: BuddyBuilderType = {
     id: uuid(),
@@ -33,6 +34,7 @@ export const createCodeSnippet = ({
     value,
     description,
     chatbotID,
+    linkToDocs,
     children: [],
   };
   return useCase;

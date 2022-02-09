@@ -1,6 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from 'react';
 
-export const TextArea = (props: React.HTMLProps<HTMLTextAreaElement>) => {
+interface TextAreaProps extends React.HTMLProps<HTMLTextAreaElement> {
+  label: string;
+}
+
+export const TextArea = ({ label, ...props }: TextAreaProps): JSX.Element => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
@@ -8,15 +12,15 @@ export const TextArea = (props: React.HTMLProps<HTMLTextAreaElement>) => {
   }, []);
 
   return (
-    <div className='form-control'>
-      <label className='label'>
-        <span className='label-text text-white'>Code example</span>
+    <div className="form-control">
+      <label className="label">
+        <span className="label-text text-white">{label}</span>
       </label>
       <textarea
         ref={textAreaRef}
         {...props}
-        className='textarea h-24 textarea-bordered text-green-600 bg-stone-700'
-        placeholder='Insert your lovely code snippet'
+        className="textarea h-18  text-green-600 bg-stone-700"
+        placeholder="Insert your lovely code snippet"
       ></textarea>
     </div>
   );

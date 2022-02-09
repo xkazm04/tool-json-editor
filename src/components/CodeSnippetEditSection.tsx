@@ -1,9 +1,9 @@
-import React, { useRef, useState } from "react";
-import { useBuddy } from "../providers/Buddy";
-import { BuddyBuilderType } from "../types";
-import { Editable } from "./Editable";
-import { Input } from "./Input";
-import { TextArea } from "./TextArea";
+import React, { useRef, useState } from 'react';
+import { useBuddy } from '../providers/Buddy';
+import { BuddyBuilderType } from '../types';
+import { Editable } from './Editable';
+import { Input } from './Input';
+import { TextArea } from './TextArea';
 
 interface OwnProps {
   codeSnippet: BuddyBuilderType;
@@ -11,7 +11,15 @@ interface OwnProps {
 }
 
 export const CodeSnippetEditSection = ({
-  codeSnippet: { description, children, id, label, value, chatbotID },
+  codeSnippet: {
+    description,
+    children,
+    id,
+    label,
+    value,
+    chatbotID,
+    linkToDocs,
+  },
   closeEditSection,
 }: OwnProps): JSX.Element => {
   const buddy = useBuddy();
@@ -22,13 +30,14 @@ export const CodeSnippetEditSection = ({
     label,
     chatbotID,
     codeExample: value,
+    linkToDocs,
   });
   return (
     <div className="max-w-screen-lg m-auto min-h-[300px] bg-glass rounded-lg my-5 p-5 relative">
       <div>
         <Editable
-          useCaseType={"input"}
-          text={codeSnippet.label || "-"}
+          useCaseType={'input'}
+          text={codeSnippet.label || '-'}
           label="Label for group of inputs"
           onUseCaseSave={() => {
             buddy?.editUseCaseValue({ label: labelValue }, id);
@@ -46,9 +55,10 @@ export const CodeSnippetEditSection = ({
       </div>
       <div className="divider"></div>
       <div>
+        {/** Description input */}
         <Editable
-          useCaseType={"input"}
-          text={description ? description : ""}
+          useCaseType={'input'}
+          text={codeSnippet.description || ''}
           label="Description"
           onUseCaseSave={() => {
             buddy?.editUseCaseValue(
@@ -70,16 +80,17 @@ export const CodeSnippetEditSection = ({
         </Editable>
       </div>
       <div>
+        {/** ChatbotID input */}
         <Editable
-          useCaseType={"input"}
-          text={chatbotID ? chatbotID : ""}
-          label="Charbot ID"
+          useCaseType={'input'}
+          text={codeSnippet.chatbotID || ''}
+          label="Chatbot ID"
           onUseCaseSave={() => {
             buddy?.editUseCaseValue({ chatbotID: codeSnippet.chatbotID }, id);
           }}
         >
-          <Input
-            labelText="Chatbot ID"
+          <TextArea
+            label="Chatbot ID"
             value={codeSnippet.chatbotID}
             onChange={(e) =>
               setCodeSnippet((prev) => ({
@@ -91,8 +102,9 @@ export const CodeSnippetEditSection = ({
         </Editable>
       </div>
       <div>
+        {/** Code example input */}
         <Editable
-          useCaseType={"code snippet"}
+          useCaseType={'code snippet'}
           text={value}
           label="Code example"
           onUseCaseSave={() => {
@@ -100,12 +112,34 @@ export const CodeSnippetEditSection = ({
           }}
         >
           <TextArea
-            // labelText='Chatbot ID'
+            label="Code example"
             value={codeSnippet.codeExample}
             onChange={(e) =>
               setCodeSnippet((prev) => ({
                 ...prev,
                 codeExample: (e.target as HTMLTextAreaElement).value,
+              }))
+            }
+          />
+        </Editable>
+      </div>
+      <div>
+        {/** Link to documentation */}
+        <Editable
+          useCaseType={'code snippet'}
+          text={codeSnippet.linkToDocs || ''}
+          label="Link to docs"
+          onUseCaseSave={() => {
+            buddy?.editUseCaseValue({ value: codeSnippet.linkToDocs }, id);
+          }}
+        >
+          <TextArea
+            label="Link to docs"
+            value={codeSnippet.linkToDocs}
+            onChange={(e) =>
+              setCodeSnippet((prev) => ({
+                ...prev,
+                linkToDocs: (e.target as HTMLTextAreaElement).value,
               }))
             }
           />

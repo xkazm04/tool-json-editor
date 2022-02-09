@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { useBuddy } from "../providers/Buddy";
-import { BuddyBuilderType } from "../types";
-import { CodeSnippet } from "./CodeSnippet";
-import { CodeSnippetEditSection } from "./CodeSnippetEditSection";
+import React, { useState } from 'react';
+import { useBuddy } from '../providers/Buddy';
+import { BuddyBuilderType } from '../types';
+import { CodeSnippet } from './CodeSnippet';
+import { CodeSnippetEditSection } from './CodeSnippetEditSection';
 
 interface OwnProps {
   codeSnippet: BuddyBuilderType;
@@ -11,14 +11,14 @@ interface OwnProps {
 
 export const CodeSnippetCard = ({ inputIndex, codeSnippet }: OwnProps) => {
   const [openEditSection, setOpenEditSection] = useState(false);
-  const { description, chatbotID, value, label, id } = codeSnippet;
+  const { description, chatbotID, value, label, id, linkToDocs } = codeSnippet;
   const buddy = useBuddy();
 
   const closeEditSection = () => setOpenEditSection(false);
 
   const handleCodeSnippetDelete = (id: string) => {
     const confirmed = window.confirm(
-      "Are you sure you want to delete code snippet?"
+      'Are you sure you want to delete code snippet?'
     );
     if (!confirmed) return;
     buddy?.deleteUseCase(id);
@@ -30,7 +30,7 @@ export const CodeSnippetCard = ({ inputIndex, codeSnippet }: OwnProps) => {
         <div>
           <div className="mb-5">
             <label className="font-bold text-white block my-1">Label</label>
-            <p>{label || "-"}</p>
+            <p>{label || '-'}</p>
           </div>
           <div className="mb-5">
             <label className="font-bold text-white block my-1">
@@ -42,11 +42,17 @@ export const CodeSnippetCard = ({ inputIndex, codeSnippet }: OwnProps) => {
             <label className="font-bold text-white block my-1">ChatbotID</label>
             <span>{chatbotID}</span>
           </div>
-          <div>
+          <div className="mb-5">
             <label className="font-bold text-white block mb-3">
               Code example
             </label>
             <CodeSnippet text={value} />
+          </div>
+          <div>
+            <label className="font-bold text-white block mb-3">
+              Link to docs
+            </label>
+            {linkToDocs}
           </div>
         </div>
         <div className="flex justify-end self-start">

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { BuddyBuilderType } from "../types";
-import { createCodeSnippet } from "../utils/createCodeSnippet";
-import { createUseCase } from "../utils/createUseCase";
-import { deepClone } from "../utils/deepClone";
-import { getSchemas } from "../utils/schemaAPI";
+import React, { useEffect, useState } from 'react';
+import { BuddyBuilderType } from '../types';
+import { createCodeSnippet } from '../utils/createCodeSnippet';
+import { createUseCase } from '../utils/createUseCase';
+import { deepClone } from '../utils/deepClone';
+import { getSchemas } from '../utils/schemaAPI';
 
 interface SchemaAttributes {
   Title: string;
@@ -25,22 +25,23 @@ interface Schema {
 }
 
 export interface NotificationType {
-  type: "success" | "error";
+  type: 'success' | 'error';
   message: string;
 }
 
-export type UseCaseType = "code snippet" | "input";
+export type UseCaseType = 'code snippet' | 'input';
 
 export type FunctionParams = {
   input: {
     optionValue: string;
     label: string;
   };
-  "code snippet": {
+  'code snippet': {
     value: string;
     description: string;
     chatbotID: string;
     label: string;
+    linkToDocs: string;
   };
 };
 
@@ -63,7 +64,7 @@ interface BuddyContextType {
   deleteUseCase: (id: string) => void;
   setActiveSchema: (id: number) => void;
   notifications: NotificationType[];
-  addNotification: (type: "error" | "success", message: string) => void;
+  addNotification: (type: 'error' | 'success', message: string) => void;
   deleteNotifications: () => void;
 }
 
@@ -81,7 +82,7 @@ export const useBuddyContext = (): BuddyContextType => {
     NotificationType[] | []
   >([]);
 
-  const addNotification = (type: NotificationType["type"], message: string) => {
+  const addNotification = (type: NotificationType['type'], message: string) => {
     setNotifications((prev) => [...prev, { type, message }]);
   };
 
@@ -93,7 +94,7 @@ export const useBuddyContext = (): BuddyContextType => {
     setLoadingSchema(true);
     getSchemas()
       .then((schema) => {
-        console.log("schema", schema.data);
+        console.log('schema', schema.data);
         if (schema.data) {
           setSchemas(schema.data);
           return;
@@ -105,8 +106,8 @@ export const useBuddyContext = (): BuddyContextType => {
       .catch((err) => {
         if (err) {
           addNotification(
-            "error",
-            "Honzo. Buddies were not found. Please try again"
+            'error',
+            'Honzo. Buddies were not found. Please try again'
           );
         }
       })
@@ -169,7 +170,7 @@ export const useBuddyContext = (): BuddyContextType => {
       const current: any = buddy;
 
       for (let [key, value] of Object.entries(current)) {
-        if (typeof key === "string") {
+        if (typeof value === 'string') {
           if (current.id === id && changingValue.hasOwnProperty(key)) {
             current[key] = (changingValue as any)[key].trim();
           } else {
@@ -200,12 +201,12 @@ export const useBuddyContext = (): BuddyContextType => {
     }
     const useCase = findUseCase(id);
 
-    if (!useCase || useCase.useCaseType === "code snippet") return;
+    if (!useCase || useCase.useCaseType === 'code snippet') return;
     setInputs((prev) => [...prev, useCase]);
   };
 
   const updateInputs = (inputs: BuddyBuilderType[]) => {
-    if ((buddy && inputs.length === 0) || inputs[0]["id"] !== buddy?.id) {
+    if ((buddy && inputs.length === 0) || inputs[0]['id'] !== buddy?.id) {
       setInputs([buddy as BuddyBuilderType]);
     } else {
       const updatedInputs = inputs.map((input) => {
@@ -246,22 +247,23 @@ export const useBuddyContext = (): BuddyContextType => {
   };
 
   const addUseCaseOption = (
-    useCaseType: BuddyBuilderType["useCaseType"],
+    useCaseType: BuddyBuilderType['useCaseType'],
     useCaseID: string,
-    values: FunctionParams["code snippet"] | FunctionParams["input"],
+    values: FunctionParams['code snippet'] | FunctionParams['input'],
     onFinish?: () => void
   ) => {
     const newUseCaseOption: BuddyBuilderType =
-      useCaseType === "input"
+      useCaseType === 'input'
         ? (createUseCase({
-            optionValue: (values as FunctionParams["input"]).optionValue,
-            label: (values as FunctionParams["input"]).label,
+            optionValue: (values as FunctionParams['input']).optionValue,
+            label: (values as FunctionParams['input']).label,
           }) as BuddyBuilderType)
         : (createCodeSnippet({
-            description: (values as FunctionParams["code snippet"]).description,
-            chatbotID: (values as FunctionParams["code snippet"]).chatbotID,
+            description: (values as FunctionParams['code snippet']).description,
+            chatbotID: (values as FunctionParams['code snippet']).chatbotID,
             label: values.label,
-            value: (values as FunctionParams["code snippet"]).value,
+            value: (values as FunctionParams['code snippet']).value,
+            linkToDocs: (values as FunctionParams['code snippet']).linkToDocs,
           }) as BuddyBuilderType);
 
     const current = deepClone(buddy as BuddyBuilderType);
