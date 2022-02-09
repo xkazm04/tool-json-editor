@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useBuddy } from '../providers/Buddy';
-import { BuddyBuilderType } from '../types';
-import { CodeSnippet } from './CodeSnippet';
-import { CodeSnippetEditSection } from './CodeSnippetEditSection';
+import { useBuddy } from '../../../providers/Buddy';
+import { BuddyBuilderType } from '../../../types';
+import { CodeSnippet } from '../CodeSnippet';
+import { CodeSnippetEditSection } from './CodeSnippetEditCard';
 
 interface OwnProps {
   codeSnippet: BuddyBuilderType;
@@ -23,6 +23,15 @@ export const CodeSnippetCard = ({ inputIndex, codeSnippet }: OwnProps) => {
     if (!confirmed) return;
     buddy?.deleteUseCase(id);
   };
+
+  // const codeSnippetValues = [
+  //   { type: 'input', title: 'Label', value: label },
+  //   { type: 'input', title: 'Description', value: description },
+  //   { type: 'input', title: 'ChatbotID', value: chatbotID },
+  //   { type: 'code snippet', title: 'Code example', value },
+  //   { type: 'input', title: 'Link to docs', value },
+
+  // ];
 
   return (
     <>

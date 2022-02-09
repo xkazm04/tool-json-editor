@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { BuddyBuilderType } from "../types";
+import { BuddyBuilderType } from "../../../types";
 import { UseCaseEditSection } from "./AddUseCaseCard";
-import { useBuddy } from "../providers/Buddy";
+import { useBuddy } from "../../../providers/Buddy";
 
 interface OwnProps {
   input: BuddyBuilderType;

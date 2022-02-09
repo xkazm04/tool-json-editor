@@ -1,7 +1,7 @@
 import React from "react";
-import { useBuddy } from "../providers/Buddy";
-import { CodeSnippetCard } from "./CodeSnippetCard";
-import { UseCaseCard } from "./UseCaseCard";
+import { useBuddy } from "../../providers/Buddy";
+import { CodeSnippetCard } from "./cards/CodeSnippetCard";
+import { UseCaseCard } from "./cards/UseCaseCard";
 
 export const UseCases = (): JSX.Element => {
   const buddy = useBuddy();

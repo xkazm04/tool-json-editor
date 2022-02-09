@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BsFillXCircleFill } from 'react-icons/bs';
-import { useBuddy } from '../providers/Buddy';
-import { BuddyBuilderType } from '../types';
-import { Editable } from './Editable';
-import { Input } from './Input';
-import { TextArea } from './TextArea';
+import { useBuddy } from '../../../providers/Buddy';
+import { BuddyBuilderType } from '../../../types';
+import { Editable } from '../Editable';
+import { Input } from '../Input';
+import { TextArea } from '../TextArea';
 
 interface OwnProps {
   input: BuddyBuilderType;

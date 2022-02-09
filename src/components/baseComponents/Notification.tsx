@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { NotificationType, useBuddy } from "../providers/Buddy";
+import { NotificationType, useBuddy } from "../../providers/Buddy";
 
 export const Notification = () => {
   const hideTimeout = 4000;

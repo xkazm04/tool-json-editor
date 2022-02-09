@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { BuddyEditor } from "../components/BuddyEditor";
-import { D3Tree } from "../components/D3Tree";
-import { Tabs } from "../components/Tabs";
+import { BuddyEditor } from "../components/sections/BuddyEditor";
+import { D3Tree } from "../components/sections/D3Tree";
+import { Tabs } from "../components/baseComponents/Tabs";
 import { useBuddy } from "../providers/Buddy";
 import { BuddyBuilderType } from "../types";
 import { deepClone } from "../utils/deepClone";

@@ -1,6 +1,6 @@
 import React from 'react';
-import { useBuddy } from '../providers/Buddy';
-import { saveSchema } from '../utils/schemaAPI';
+import { useBuddy } from '../../providers/Buddy';
+import { saveSchema } from '../../utils/schemaAPI';
 
 interface BuddyEditorControllersProps {
   setShowSchema: () => void;

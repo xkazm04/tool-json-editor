@@ -5,7 +5,11 @@ import { RawNodeDatum } from 'react-d3-tree/lib/types/common';
 interface OwnProps {
   d3Tree: RawNodeDatum | RawNodeDatum[] | undefined;
 }
-
+/** Displays current schema using D3Tree to have better visual understanding how shcema looks
+ * 
+ * @param d3Tree
+ * @returns JSX.Element
+ */
 export const D3Tree = ({ d3Tree }: OwnProps): JSX.Element => {
   const renderForeignObjectNode = ({
     nodeDatum,

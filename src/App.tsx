@@ -1,5 +1,5 @@
 import React from "react";
-import { Notification } from "./components/Notification";
+import { Notification } from "./components/baseComponents/Notification";
 import { HomePage } from "./pages/HomePage";
 import { BuddyContext, useBuddyContext } from "./providers/Buddy";
 

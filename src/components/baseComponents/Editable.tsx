@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BuddyBuilderType } from '../types';
+import { BuddyBuilderType } from '../../types';
 import { CodeSnippet } from './CodeSnippet';
 
 interface OwnProps {

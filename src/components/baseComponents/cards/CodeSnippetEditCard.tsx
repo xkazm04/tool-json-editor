@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
-import { useBuddy } from '../providers/Buddy';
-import { BuddyBuilderType } from '../types';
-import { Editable } from './Editable';
-import { Input } from './Input';
-import { TextArea } from './TextArea';
+import { useBuddy } from '../../../providers/Buddy';
+import { BuddyBuilderType } from '../../../types';
+import { Editable } from '../Editable';
+import { Input } from '../Input';
+import { TextArea } from '../TextArea';
 
 interface OwnProps {
   codeSnippet: BuddyBuilderType;
