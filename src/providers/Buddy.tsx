@@ -94,7 +94,6 @@ export const useBuddyContext = (): BuddyContextType => {
     setLoadingSchema(true);
     getSchemas()
       .then((schema) => {
-        console.log('schema', schema.data);
         if (schema.data) {
           setSchemas(schema.data);
           return;
@@ -139,27 +138,6 @@ export const useBuddyContext = (): BuddyContextType => {
       }
     }
   };
-
-  // const deleteUseCase = (id: string, buddy: BuddyBuilderType | null) => {
-  //   const deleteCase = (buddy: BuddyBuilderType | null) => {
-  //     if (!id || !buddy) return;
-  //     const current: any = buddy;
-
-  //     for (let [key, value] of Object.entries(current)) {
-  //       if (typeof key === "string") {
-  //         current[key as keyof BuddyBuilderType] = value;
-  //       }
-  //       if (Array.isArray(value)) {
-  //         current[key] = (value as BuddyBuilderType["children"])
-  //           .filter((v) => v.id !== id)
-  //           .map((v) => deleteCase(v));
-  //       }
-  //     }
-  //     return current;
-  //   };
-  //   const withoutDeletedUseCase = deleteCase(buddy);
-  //   setBuddy((prev) => ({ ...prev, ...withoutDeletedUseCase }));
-  // };
 
   const editUseCaseValue = (
     changingValue: Partial<EditingValues>,
