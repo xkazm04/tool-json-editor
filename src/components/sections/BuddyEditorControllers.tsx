@@ -19,25 +19,6 @@ export const BuddyEditorControllers = ({
   const buddy = useBuddy();
   return (
     <div className="w-full flex items-center justify-evenly mt-10 mb-6 ">
-      {/** Schema switcher between REST, SDK and GRAPHQL etc. */}
-      <div className="bg-glass rounded-md p-3 items-center">
-        {buddy?.schemas.map(({ id, attributes }, index) => {
-          return (
-            <button
-              onClick={() => buddy.setActiveSchema(id)}
-              className={`btn w-36 mx-2 ${
-                buddy.currentlyEditingSchema === id
-                  ? 'bg-[#FF00FF] border-[#FF00FF]'
-                  : ''
-              }`}
-              key={index}
-              id={JSON.stringify(id)}
-            >
-              {attributes.Title}
-            </button>
-          );
-        })}
-      </div>
       {/** Save to schema button */}
       <div className="bg-glass rounded-md p-3">
         <button

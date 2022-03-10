@@ -3,6 +3,7 @@ import { useBuddy } from '../../../providers/Buddy';
 import { BuddyBuilderType } from '../../../types';
 import { CodeSnippet } from '../CodeSnippet';
 import { CodeSnippetEditSection } from './CodeSnippetEditCard';
+import { ReactComponent as EditIcon } from '../../../assets/icons/edit.svg';
 
 interface OwnProps {
   codeSnippet: BuddyBuilderType;
@@ -30,26 +31,25 @@ export const CodeSnippetCard = ({ inputIndex, codeSnippet }: OwnProps) => {
   //   { type: 'input', title: 'ChatbotID', value: chatbotID },
   //   { type: 'code snippet', title: 'Code example', value },
   //   { type: 'input', title: 'Link to docs', value },
-
   // ];
 
   return (
     <>
-      <div className="max-w-screen-lg m-auto bg-glass rounded-lg p-5  grid grid-cols-[50%_50%] justify-center items-center my-5 w-full">
+      <div className="max-w-screen-lg m-auto bg-[#FFFFFF08] p-5 grid grid-cols-[90%_10%] justify-center items-center my-5 w-full">
         <div>
           <div className="mb-5">
             <label className="font-bold text-white block my-1">Label</label>
-            <p>{label || '-'}</p>
+            <p className="text-dark-300">{label || '-'}</p>
           </div>
           <div className="mb-5">
             <label className="font-bold text-white block my-1">
               Description
             </label>
-            <p>{description}</p>
+            <p className="text-dark-300">{description}</p>
           </div>
           <div className="mb-5">
             <label className="font-bold text-white block my-1">ChatbotID</label>
-            <span>{chatbotID}</span>
+            <span className="text-dark-300">{chatbotID}</span>
           </div>
           <div className="mb-5">
             <label className="font-bold text-white block mb-3">
@@ -61,11 +61,15 @@ export const CodeSnippetCard = ({ inputIndex, codeSnippet }: OwnProps) => {
             <label className="font-bold text-white block mb-3">
               Link to docs
             </label>
-            {linkToDocs}
+            <p className="text-dark-300">{linkToDocs}</p>
           </div>
         </div>
         <div className="flex justify-end self-start">
-          {openEditSection ? (
+          <EditIcon
+            onClick={() => setOpenEditSection(!openEditSection)}
+            className="cursor-pointer"
+          />
+          {/* {openEditSection ? (
             <button onClick={() => setOpenEditSection(false)} className="btn">
               Close
             </button>
@@ -81,7 +85,7 @@ export const CodeSnippetCard = ({ inputIndex, codeSnippet }: OwnProps) => {
                 Delete
               </button>
             </>
-          )}
+          )} */}
         </div>
       </div>
       {openEditSection && (

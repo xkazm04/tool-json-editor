@@ -9,11 +9,7 @@ export const BuddyEditor = () => {
   const makeSchemaVisible = () => setShowSchema(!showSchema);
 
   return (
-    <div>
-      <BuddyEditorControllers
-        setShowSchema={makeSchemaVisible}
-        schemaIsVisible={showSchema}
-      />
+    <div className="w-full overflow-hidden">
       <div
         className={`grid  m-auto ${
           showSchema ? 'grid-cols-[47%_47%] gap-[6%]' : 'grid-cols-[100%]'

@@ -19,7 +19,7 @@ export const TextArea = ({ label, ...props }: TextAreaProps): JSX.Element => {
       <textarea
         ref={textAreaRef}
         {...props}
-        className="textarea h-18  text-green-600 bg-stone-700"
+        className="p-2 h-18 bg-[#FFFFFF0F] outline-none text-green-600 bg-stone-700"
         placeholder="Insert your lovely code snippet"
       ></textarea>
     </div>

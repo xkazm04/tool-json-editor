@@ -5,10 +5,22 @@ import { BuddyBuilderType } from '../../../types';
 import { Editable } from '../Editable';
 import { Input } from '../Input';
 import { TextArea } from '../TextArea';
+import { ReactComponent as CloseIcon } from '../../../assets/icons/close.svg';
+import { ReactComponent as DeleteIcon } from '../../../assets/icons/delete.svg';
+import { ReactComponent as PlusIcon } from '../../../assets/icons/plus.svg';
+import { AddCodeSnippetCard } from './AddCodeSnippetCard';
 
 interface OwnProps {
   input: BuddyBuilderType;
   closeEditSection: () => void;
+}
+
+export interface CodeSnippetFields {
+  visible: boolean;
+  codeExample: string;
+  description: string;
+  chatbotId: string;
+  linkToDocs: string;
 }
 
 export const UseCaseEditSection = ({
@@ -32,7 +44,7 @@ export const UseCaseEditSection = ({
       }[]
     | []
   >([]);
-  const [codeSnippet, setCodeSnippet] = useState({
+  const [codeSnippet, setCodeSnippet] = useState<CodeSnippetFields>({
     visible: false,
     codeExample: '',
     description: '',
@@ -100,219 +112,127 @@ export const UseCaseEditSection = ({
   };
 
   return (
-    <div className="max-w-screen-lg m-auto min-h-[300px] bg-glass  rounded-lg my-5 p-5 relative">
-      <div className="grid grid-cols-[70%_20%] gap-5">
-        <Editable
-          useCaseType={'input'}
-          text={label.value}
-          label="Label for group of inputs"
-          onUseCaseSave={() => {
-            buddy?.editUseCaseValue({ label: label.value }, id);
-            setLabel((prev) => ({ ...prev, isEditing: false }));
-          }}
-        >
-          <Input
-            ref={labelInputRef}
-            labelText="Label for group of inputs"
-            value={label.value}
-            onChange={(e) =>
-              setLabel((prev) => ({
-                ...prev,
-                value: (e.target as HTMLInputElement).value,
-              }))
-            }
-          />
-        </Editable>
+    <div className="max-w-screen-lg m-auto min-h-[300px] bg-[#FFFFFF08] my-5 p-5 relative">
+      <div className="grid grid-cols-[1fr_10%] ">
+        <Input
+          ref={labelInputRef}
+          labelText="Label"
+          value={label.value}
+          onChange={(e) =>
+            setLabel((prev) => ({
+              ...prev,
+              value: (e.target as HTMLInputElement).value,
+            }))
+          }
+        />
+        <div className="self-end justify-self-end pb-4">
+          <DeleteIcon className="cursor-pointer" />
+        </div>
       </div>
       <div className="divider"></div>
       {options.length > 0 &&
         options.map(({ label, value, id, useCaseType }, index) => {
           return (
-            <div key={index} className="p-2 bg-glass my-2 rounded-xl">
-              <Editable
-                useCaseType={useCaseType}
-                onUseCaseSave={() =>
-                  buddy?.editUseCaseValue(
-                    { value: options[index]['value'] },
-                    id
-                  )
-                }
-                label={label}
-                text={value}
-                onUseCaseDelete={() => handleUseCaseDelete(id)}
-              >
-                {useCaseType === 'input' ? (
+            <div key={index} className="grid grid-cols-[1fr_10%] gap-5">
+              {useCaseType === 'input' ? (
+                <>
                   <Input
                     labelText={label}
                     value={value}
                     onChange={(e) => handleOptionChange(e, id)}
                   />
-                ) : (
-                  <TextArea
-                    label=""
-                    value={value}
-                    onChange={(e) => handleOptionChange(e, id)}
-                  />
-                )}
-              </Editable>
+                  <div className="self-end justify-self-end pb-4">
+                    <DeleteIcon className="cursor-pointer" />
+                  </div>
+                </>
+              ) : (
+                <TextArea
+                  label=""
+                  value={value}
+                  onChange={(e) => handleOptionChange(e, id)}
+                />
+              )}
             </div>
           );
         })}
       {newInput.visible && (
-        <form
-          onSubmit={() => {
-            buddy?.addUseCaseOption('input', id, {
-              optionValue: newInput.value,
-              label: '',
-            });
-            setNewInput((prev) => ({ ...prev, value: '', visible: false }));
-          }}
-        >
-          <div className="flex w-full items-center justify-between">
-            <Input
-              className="w-9/12"
-              ref={newInputRef}
-              value={newInput.value}
-              onChange={(e) =>
+        <div className="grid grid-cols-[1fr_10%] gap-5">
+          <Input
+            ref={newInputRef}
+            value={newInput.value}
+            onChange={(e) =>
+              setNewInput((prev) => ({
+                ...prev,
+                value: (e.target as HTMLInputElement).value,
+              }))
+            }
+          />
+          <div className="self-end justify-self-end pb-4">
+            <DeleteIcon
+              onClick={() =>
                 setNewInput((prev) => ({
                   ...prev,
-                  value: (e.target as HTMLInputElement).value,
-                }))
-              }
-            />
-            <div className="justify-self-center flex flex-col">
-              <button
-                disabled={newInput.value === ''}
-                type="submit"
-                className="btn btn-sm mb-1"
-              >
-                Confirm
-              </button>
-              <button
-                onClick={() =>
-                  setNewInput((prev) => ({
-                    ...prev,
-                    value: '',
-                    visible: false,
-                  }))
-                }
-                className="btn btn-sm"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </form>
-      )}
-      {codeSnippet.visible && (
-        <div className="grid grid-cols-[70%_20%] gap-x-10">
-          <div>
-            <TextArea
-              value={codeSnippet.description}
-              onChange={(e) =>
-                setCodeSnippet((prev) => ({
-                  ...prev,
-                  description: (e.target as HTMLInputElement).value,
-                }))
-              }
-              label="Description"
-            />
-            <TextArea
-              onChange={(e) =>
-                setCodeSnippet((prev) => ({
-                  ...prev,
-                  chatbotId: (e.target as HTMLInputElement).value,
-                }))
-              }
-              value={codeSnippet.chatbotId}
-              label="Chatbot ID"
-            />
-            <TextArea
-              value={codeSnippet.codeExample}
-              onChange={(e) =>
-                setCodeSnippet((prev) => ({
-                  ...prev,
-                  codeExample: (e.target as HTMLTextAreaElement).value,
-                }))
-              }
-              label="Code example"
-            />
-            <Input
-              value={codeSnippet.linkToDocs}
-              onChange={(e) =>
-                setCodeSnippet((prev) => ({
-                  ...prev,
-                  linkToDocs: (e.target as HTMLInputElement).value,
-                }))
-              }
-              labelText="Link to documentation"
-            />
-          </div>
-          <div className="justify-self-end self-end">
-            <button
-              disabled={!inputsAreValid()}
-              onClick={() => {
-                buddy?.addUseCaseOption(
-                  'code snippet',
-                  id,
-                  {
-                    description: codeSnippet.description,
-                    chatbotID: codeSnippet.chatbotId,
-                    label: label.value,
-                    value: codeSnippet.codeExample,
-                    linkToDocs: codeSnippet.linkToDocs
-                  },
-                  () =>
-                    setCodeSnippet((prev) => ({
-                      ...prev,
-                      visible: false,
-                      value: '',
-                    }))
-                );
-              }}
-              type="submit"
-              className="btn w-full "
-            >
-              Save
-            </button>
-            <button
-              onClick={() =>
-                setCodeSnippet((prev) => ({
-                  ...prev,
-                  visible: false,
                   value: '',
+                  visible: false,
                 }))
               }
-              className="btn w-full mt-2"
-            >
-              Cancel
-            </button>
+              className="cursor-pointer"
+            />
           </div>
         </div>
       )}
-      <div>
-        {(options.length > 0 && options[0]['useCaseType'] === 'code snippet') ||
-        codeSnippet.visible ||
-        newInput.visible ? null : (
-          <button
-            className="btn my-3"
-            onClick={() => setNewInput((prev) => ({ ...prev, visible: true }))}
-          >
-            Add option
+      {codeSnippet.visible && (
+        <AddCodeSnippetCard
+          codeSnippet={codeSnippet}
+          setCodeSnippet={setCodeSnippet}
+        />
+      )}
+      <div className="flex justify-between my-5">
+        <div>
+          <div className="relative group">
+            <PlusIcon />
+            <div className="absolute top-5 left-0 hidden group-hover:flex group-hover:flex-col">
+              {(options.length > 0 &&
+                options[0]['useCaseType'] === 'code snippet') ||
+              codeSnippet.visible ||
+              (newInput.visible && newInput.value === ''.trim()) ? null : (
+                <span
+                  onClick={() =>
+                    setNewInput((prev) => ({ ...prev, visible: true }))
+                  }
+                  className="py-1"
+                >
+                  Option
+                </span>
+              )}
+              {options?.length === 0 &&
+                !codeSnippet.visible &&
+                !newInput.visible && (
+                  <span
+                    className="py-1"
+                    onClick={() =>
+                      setCodeSnippet((prev) => ({ ...prev, visible: true }))
+                    }
+                  >
+                    Code
+                  </span>
+                )}
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-center">
+          <button className="btn rounded-none hover:bg-transparent hover:text-[#FFFFFF66] text-[#FFFFFF66] bg-transparent border-none uppercase p-2 self-start cursor-pointer">
+            Cancel
           </button>
-        )}
-        {options?.length === 0 && !codeSnippet.visible && !newInput.visible && (
           <button
-            className="btn my-3 ml-5"
-            onClick={() =>
-              setCodeSnippet((prev) => ({ ...prev, visible: true }))
-            }
+            disabled={!inputsAreValid() && codeSnippet.visible}
+            className="btn border-none  rounded-none hover:bg-green hover:text-[#2F3152] text-[#2F3152] uppercase p-2 bg-green self-start cursor-pointer"
           >
-            Add code snippet
+            Save changes
           </button>
-        )}
+        </div>
       </div>
-      <BsFillXCircleFill
+      <CloseIcon
         onClick={closeEditSection}
         className="absolute top-4 right-4 scale-150 cursor-pointer"
       />

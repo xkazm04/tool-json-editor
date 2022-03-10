@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { BuddyBuilderType } from "../../../types";
-import { UseCaseEditSection } from "./AddUseCaseCard";
-import { useBuddy } from "../../../providers/Buddy";
+import React, { useState } from 'react';
+import { BuddyBuilderType } from '../../../types';
+import { UseCaseEditSection } from './AddUseCaseCard';
+import { useBuddy } from '../../../providers/Buddy';
+import { ReactComponent as EditIcon } from '../../../assets/icons/edit.svg';
 
 interface OwnProps {
   input: BuddyBuilderType;
@@ -15,12 +16,12 @@ export const UseCaseCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
   const closeEditSection = () => setOpenEditSection(false);
   return (
     <>
-      <div className="max-w-screen-lg m-auto bg-glass rounded-lg p-5  grid grid-cols-[50%_50%] justify-center items-center my-5 w-full">
+      <div className="max-w-screen-lg m-auto bg-[#FFFFFF08]  p-5  grid grid-cols-[1fr_10%] justify-between items-center my-5 w-full">
         <div>
-          {input?.label && <label className="block">{input.label}</label>}
+          <label className="block">{input.label || 'Select option'}</label>
           <select
             onChange={(e) => buddy?.selectOption(e.target.value, inputIndex)}
-            className="select select-bordered w-full max-w-xs my-1"
+            className="bg-[#FFFFFF0F] outline-none p-2 w-full  mt-2"
           >
             <option selected={true} disabled value=""></option>
             {input?.children
@@ -42,10 +43,11 @@ export const UseCaseCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
               })}
           </select>
         </div>
-        <div className="flex justify-end">
-          <button onClick={() => setOpenEditSection(true)} className="btn">
-            Edit
-          </button>
+        <div className="flex justify-end self-end pb-2">
+          <EditIcon
+            onClick={() => setOpenEditSection(true)}
+            className="cursor-pointer"
+          />
         </div>
       </div>
       {openEditSection && (
