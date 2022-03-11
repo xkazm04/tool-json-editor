@@ -177,6 +177,7 @@ export const useBuddyContext = (): BuddyContextType => {
       handlePreviousSelectChange(selectIndex, id);
       return;
     }
+
     const useCase = findUseCase(id);
 
     if (!useCase || useCase.useCaseType === 'code snippet') return;
@@ -259,10 +260,6 @@ export const useBuddyContext = (): BuddyContextType => {
     setBuddy(current);
     onFinish && onFinish();
   };
-
-
-  
-
 
   useEffect(() => {
     if (!buddy) return;

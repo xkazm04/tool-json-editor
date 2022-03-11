@@ -4,15 +4,18 @@ import { Input } from '../Input';
 import { TextArea } from '../TextArea';
 import { CodeSnippetFields } from './AddUseCaseCard';
 import { ReactComponent as DeleteIcon } from '../../../assets/icons/delete.svg';
+import { BuddyBuilderType } from '../../../types';
 
 interface AddCodeSnippetCardProps {
-  codeSnippet: CodeSnippetFields;
+  codeSnippet: BuddyBuilderType;
   setCodeSnippet: React.Dispatch<React.SetStateAction<CodeSnippetFields>>;
+  handleCodeSnippetChange: (key: keyof BuddyBuilderType, value: any) => void;
 }
 
 export const AddCodeSnippetCard = ({
   codeSnippet,
   setCodeSnippet,
+  handleCodeSnippetChange,
 }: AddCodeSnippetCardProps): JSX.Element => {
   const buddy = useBuddy();
   return (
@@ -21,40 +24,40 @@ export const AddCodeSnippetCard = ({
         <TextArea
           value={codeSnippet.description}
           onChange={(e) =>
-            setCodeSnippet((prev) => ({
-              ...prev,
-              description: (e.target as HTMLInputElement).value,
-            }))
+            handleCodeSnippetChange(
+              'description',
+              (e.target as HTMLInputElement).value
+            )
           }
           label="Description"
         />
         <TextArea
           onChange={(e) =>
-            setCodeSnippet((prev) => ({
-              ...prev,
-              chatbotId: (e.target as HTMLInputElement).value,
-            }))
+            handleCodeSnippetChange(
+              'chatbotID',
+              (e.target as HTMLInputElement).value
+            )
           }
-          value={codeSnippet.chatbotId}
+          value={codeSnippet.chatbotID}
           label="Chatbot ID"
         />
         <TextArea
-          value={codeSnippet.codeExample}
+          value={codeSnippet.value}
           onChange={(e) =>
-            setCodeSnippet((prev) => ({
-              ...prev,
-              codeExample: (e.target as HTMLTextAreaElement).value,
-            }))
+            handleCodeSnippetChange(
+              'value',
+              (e.target as HTMLInputElement).value
+            )
           }
           label="Code example"
         />
         <Input
           value={codeSnippet.linkToDocs}
           onChange={(e) =>
-            setCodeSnippet((prev) => ({
-              ...prev,
-              linkToDocs: (e.target as HTMLInputElement).value,
-            }))
+            handleCodeSnippetChange(
+              'linkToDocs',
+              (e.target as HTMLInputElement).value
+            )
           }
           labelText="Link to documentation"
         />

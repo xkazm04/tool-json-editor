@@ -11,6 +11,7 @@ import { ReactComponent as PlusIcon } from '../../../assets/icons/plus.svg';
 import { AddCodeSnippetCard } from './AddCodeSnippetCard';
 import { createUseCase } from '../../../utils/createUseCase';
 import { deepClone } from '../../../utils/deepClone';
+import { createCodeSnippet } from '../../../utils/createCodeSnippet';
 
 interface OwnProps {
   input: BuddyBuilderType;
@@ -29,21 +30,11 @@ export const UseCaseEditSection = ({
   input,
   closeEditSection,
 }: OwnProps): JSX.Element => {
-  const [label, setLabel] = useState('');
   const [currentUseCase, setCurrentUseCase] = useState<BuddyBuilderType>(input);
 
   const labelInputRef = useRef<HTMLInputElement | null>(null);
   const newInputRef = useRef<HTMLInputElement | null>(null);
   const [newInput, setNewInput] = useState({ visible: false, value: '' });
-  const [options, setOptions] = useState<
-    | {
-        value: string;
-        id: string;
-        label: string;
-        useCaseType: 'input' | 'code snippet';
-      }[]
-    | []
-  >([]);
 
   const [codeSnippet, setCodeSnippet] = useState<CodeSnippetFields>({
     visible: false,
@@ -55,12 +46,41 @@ export const UseCaseEditSection = ({
 
   const buddy = useBuddy();
 
+  const deleteUseCase = (id: string) => {
+    let current = deepClone(currentUseCase);
+    const queue = [];
+    queue.push(current);
+
+    while (queue.length > 0) {
+      let сurrentNode = queue.shift();
+      const filtered = сurrentNode?.children.filter((child) => child.id !== id);
+      if (filtered?.length !== сurrentNode?.children.length) {
+        (сurrentNode as any).children = filtered;
+        setCurrentUseCase((prev) => ({ ...prev, ...current }));
+        return;
+      } else {
+        сurrentNode?.children.forEach((child) => queue.push(child));
+      }
+    }
+  };
+
   const handleUseCaseDelete = (id: string) => {
     const confirmed = window.confirm(
       'Are you sure you want to delete the use case?'
     );
     if (!confirmed) return;
-    buddy?.deleteUseCase(id);
+    deleteUseCase(id);
+  };
+
+  const handleCodeSnippetChange = (key: keyof BuddyBuilderType, value: any) => {
+    const current = deepClone(currentUseCase);
+
+    const codeSnippet = current.children[0];
+
+    codeSnippet[key] = value as string &
+      ('input' | 'code snippet') &
+      (BuddyBuilderType[] | []);
+    setCurrentUseCase(current);
   };
 
   const handleOptionChange = (
@@ -79,16 +99,29 @@ export const UseCaseEditSection = ({
     setCurrentUseCase(current);
   };
 
-  const handleOptionAdd = () => {
-    const newOption = createUseCase({ optionValue: '', label: '' });
+  const handleOptionAdd = (optionType: 'code snippet' | 'input') => {
+    const newOption =
+      optionType === 'input'
+        ? createUseCase({ optionValue: '', label: '' })
+        : createCodeSnippet({
+            description: '',
+            value: '',
+            chatbotID: '',
+            label: '',
+            linkToDocs: '',
+          });
 
     const copied = deepClone(currentUseCase);
     copied.children.push(newOption as never);
+
     setCurrentUseCase(copied);
   };
 
+  console.log('current', currentUseCase);
   const handleUseCaseEdit = (id: string) => {
-    const current = deepClone(currentUseCase);
+    if (!buddy?.buddy) return;
+
+    const current = deepClone(buddy?.buddy);
 
     const queue = [];
     queue.push(current);
@@ -104,14 +137,18 @@ export const UseCaseEditSection = ({
           let oldValue = first[key as keyof typeof first];
           const newValue = currentUseCase[key as keyof typeof currentUseCase];
 
-          oldValue = newValue;
+          first[key as keyof typeof first] = newValue as string &
+            ('input' | 'code snippet') &
+            (BuddyBuilderType[] | []);
         });
+        console.log('first', first);
       } else {
         first?.children.forEach((child) => {
           queue.push(child);
         });
       }
     }
+    console.log('current', current);
     buddy?.setBuddy(current);
   };
 
@@ -150,9 +187,6 @@ export const UseCaseEditSection = ({
             }))
           }
         />
-        <div className="self-end justify-self-end pb-4">
-          <DeleteIcon className="cursor-pointer" />
-        </div>
       </div>
       <div className="divider"></div>
       {currentUseCase.children.map(
@@ -167,73 +201,49 @@ export const UseCaseEditSection = ({
                     onChange={(e) => handleOptionChange(e, id)}
                   />
                   <div className="self-end justify-self-end pb-4">
-                    <DeleteIcon className="cursor-pointer" />
+                    <DeleteIcon
+                      onClick={() => handleUseCaseDelete(id)}
+                      className="cursor-pointer"
+                    />
                   </div>
                 </>
               ) : (
-                <TextArea
-                  label=""
-                  value={value}
-                  onChange={(e) => handleOptionChange(e, id)}
+                <AddCodeSnippetCard
+                  codeSnippet={currentUseCase.children[0]}
+                  handleCodeSnippetChange={handleCodeSnippetChange}
+                  setCodeSnippet={setCodeSnippet}
                 />
               )}
             </div>
           );
         }
       )}
-      {newInput.visible && (
-        <div className="grid grid-cols-[1fr_10%] gap-5">
-          <Input
-            ref={newInputRef}
-            value={newInput.value}
-            onChange={(e) =>
-              setNewInput((prev) => ({
-                ...prev,
-                value: (e.target as HTMLInputElement).value,
-              }))
-            }
-          />
-          <div className="self-end justify-self-end pb-4">
-            <DeleteIcon
-              onClick={() =>
-                setNewInput((prev) => ({
-                  ...prev,
-                  value: '',
-                  visible: false,
-                }))
-              }
-              className="cursor-pointer"
-            />
-          </div>
-        </div>
-      )}
-      {codeSnippet.visible && (
+
+      {/* {currentUseCase.children.length === 1 && (
         <AddCodeSnippetCard
-          codeSnippet={codeSnippet}
+          codeSnippet={currentUseCase.children[0]}
           setCodeSnippet={setCodeSnippet}
         />
-      )}
+      )} */}
       <div className="flex justify-between my-5">
         <div>
           <div className="relative group">
             <PlusIcon />
             <div className="absolute top-5 left-0 hidden group-hover:flex group-hover:flex-col">
-              {(options.length > 0 &&
-                options[0]['useCaseType'] === 'code snippet') ||
+              {(currentUseCase.children.length > 0 &&
+                currentUseCase.children[0]['useCaseType'] === 'code snippet') ||
               codeSnippet.visible ||
               (newInput.visible && newInput.value === ''.trim()) ? null : (
-                <span onClick={() => handleOptionAdd()} className="py-1">
+                <span onClick={() => handleOptionAdd('input')} className="py-1">
                   Option
                 </span>
               )}
-              {options?.length === 0 &&
+              {currentUseCase.children?.length === 0 &&
                 !codeSnippet.visible &&
                 !newInput.visible && (
                   <span
                     className="py-1"
-                    onClick={() =>
-                      setCodeSnippet((prev) => ({ ...prev, visible: true }))
-                    }
+                    onClick={() => handleOptionAdd('code snippet')}
                   >
                     Code
                   </span>
