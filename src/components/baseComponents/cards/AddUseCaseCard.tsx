@@ -9,6 +9,8 @@ import { ReactComponent as CloseIcon } from '../../../assets/icons/close.svg';
 import { ReactComponent as DeleteIcon } from '../../../assets/icons/delete.svg';
 import { ReactComponent as PlusIcon } from '../../../assets/icons/plus.svg';
 import { AddCodeSnippetCard } from './AddCodeSnippetCard';
+import { createUseCase } from '../../../utils/createUseCase';
+import { deepClone } from '../../../utils/deepClone';
 
 interface OwnProps {
   input: BuddyBuilderType;
@@ -24,13 +26,11 @@ export interface CodeSnippetFields {
 }
 
 export const UseCaseEditSection = ({
-  input: { children, label: labelValue, id },
+  input,
   closeEditSection,
 }: OwnProps): JSX.Element => {
-  const [label, setLabel] = useState<{
-    value: string;
-    isEditing: boolean;
-  }>({ value: '', isEditing: false });
+  const [label, setLabel] = useState('');
+  const [currentUseCase, setCurrentUseCase] = useState<BuddyBuilderType>(input);
 
   const labelInputRef = useRef<HTMLInputElement | null>(null);
   const newInputRef = useRef<HTMLInputElement | null>(null);
@@ -44,6 +44,7 @@ export const UseCaseEditSection = ({
       }[]
     | []
   >([]);
+
   const [codeSnippet, setCodeSnippet] = useState<CodeSnippetFields>({
     visible: false,
     codeExample: '',
@@ -66,28 +67,53 @@ export const UseCaseEditSection = ({
     e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     id: string
   ) => {
-    const withChangedOption = options.map((option) => {
-      return option.id === id
-        ? {
-            ...option,
-            value: (e.target as HTMLInputElement | HTMLTextAreaElement).value,
-          }
-        : option;
+    const current = deepClone(currentUseCase);
+    const newValue = (e.target as HTMLInputElement).value;
+
+    current.children.forEach((child) => {
+      if (child.id === id) {
+        child.value = newValue;
+      }
     });
-    setOptions(withChangedOption);
+
+    setCurrentUseCase(current);
   };
 
-  useEffect(() => {
-    setOptions(
-      children.map(({ id, value, label, useCaseType }) => ({
-        value,
-        id,
-        isEditing: false,
-        label,
-        useCaseType,
-      }))
-    );
-  }, [children]);
+  const handleOptionAdd = () => {
+    const newOption = createUseCase({ optionValue: '', label: '' });
+
+    const copied = deepClone(currentUseCase);
+    copied.children.push(newOption as never);
+    setCurrentUseCase(copied);
+  };
+
+  const handleUseCaseEdit = (id: string) => {
+    const current = deepClone(currentUseCase);
+
+    const queue = [];
+    queue.push(current);
+
+    while (queue.length > 0) {
+      let first = queue.shift();
+      if (id === first?.id) {
+        first.label = currentUseCase.label;
+
+        // replaces all old keys with new one
+        Object.keys(currentUseCase).forEach((key) => {
+          if (!first || !currentUseCase) return;
+          let oldValue = first[key as keyof typeof first];
+          const newValue = currentUseCase[key as keyof typeof currentUseCase];
+
+          oldValue = newValue;
+        });
+      } else {
+        first?.children.forEach((child) => {
+          queue.push(child);
+        });
+      }
+    }
+    buddy?.setBuddy(current);
+  };
 
   useEffect(() => {
     newInputRef.current?.focus();
@@ -96,10 +122,6 @@ export const UseCaseEditSection = ({
   useEffect(() => {
     labelInputRef.current?.focus();
   }, []);
-
-  useEffect(() => {
-    setLabel((prev) => ({ ...prev, value: labelValue }));
-  }, [labelValue]);
 
   const inputsAreValid = () => {
     const inputsValues = [];
@@ -110,6 +132,9 @@ export const UseCaseEditSection = ({
     }
     return inputsValues.every((value) => value !== ''.trim());
   };
+  useEffect(() => {
+    setCurrentUseCase(input);
+  }, []);
 
   return (
     <div className="max-w-screen-lg m-auto min-h-[300px] bg-[#FFFFFF08] my-5 p-5 relative">
@@ -117,11 +142,11 @@ export const UseCaseEditSection = ({
         <Input
           ref={labelInputRef}
           labelText="Label"
-          value={label.value}
+          value={currentUseCase?.label}
           onChange={(e) =>
-            setLabel((prev) => ({
+            setCurrentUseCase((prev) => ({
               ...prev,
-              value: (e.target as HTMLInputElement).value,
+              label: (e.target as HTMLInputElement).value,
             }))
           }
         />
@@ -130,8 +155,8 @@ export const UseCaseEditSection = ({
         </div>
       </div>
       <div className="divider"></div>
-      {options.length > 0 &&
-        options.map(({ label, value, id, useCaseType }, index) => {
+      {currentUseCase.children.map(
+        ({ label, value, id, useCaseType }, index) => {
           return (
             <div key={index} className="grid grid-cols-[1fr_10%] gap-5">
               {useCaseType === 'input' ? (
@@ -154,7 +179,8 @@ export const UseCaseEditSection = ({
               )}
             </div>
           );
-        })}
+        }
+      )}
       {newInput.visible && (
         <div className="grid grid-cols-[1fr_10%] gap-5">
           <Input
@@ -196,12 +222,7 @@ export const UseCaseEditSection = ({
                 options[0]['useCaseType'] === 'code snippet') ||
               codeSnippet.visible ||
               (newInput.visible && newInput.value === ''.trim()) ? null : (
-                <span
-                  onClick={() =>
-                    setNewInput((prev) => ({ ...prev, visible: true }))
-                  }
-                  className="py-1"
-                >
+                <span onClick={() => handleOptionAdd()} className="py-1">
                   Option
                 </span>
               )}
@@ -225,6 +246,7 @@ export const UseCaseEditSection = ({
             Cancel
           </button>
           <button
+            onClick={() => handleUseCaseEdit(input.id)}
             disabled={!inputsAreValid() && codeSnippet.visible}
             className="btn border-none  rounded-none hover:bg-green hover:text-[#2F3152] text-[#2F3152] uppercase p-2 bg-green self-start cursor-pointer"
           >
@@ -239,3 +261,4 @@ export const UseCaseEditSection = ({
     </div>
   );
 };
+//

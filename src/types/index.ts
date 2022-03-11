@@ -1,5 +1,5 @@
 export interface BuddyBuilderType {
-  useCaseType: "input" | "code snippet";
+  useCaseType: 'input' | 'code snippet' ;
   value: string;
   label: string;
   id: string;
