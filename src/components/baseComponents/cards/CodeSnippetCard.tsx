@@ -10,13 +10,13 @@ interface OwnProps {
   inputIndex: number;
 }
 
-export const CodeSnippetCard = ({ inputIndex, codeSnippet }: OwnProps) => {
+export const CodeSnippetCard = ({ codeSnippet }: OwnProps) => {
   const [openEditSection, setOpenEditSection] = useState(false);
-  const { description, chatbotID, value, label, id, linkToDocs } = codeSnippet;
+  const { description, chatbotID, value, label, linkToDocs } = codeSnippet;
   const buddy = useBuddy();
 
   const closeEditSection = () => setOpenEditSection(false);
-
+  
   const handleCodeSnippetDelete = (id: string) => {
     const confirmed = window.confirm(
       'Are you sure you want to delete code snippet?'
@@ -24,14 +24,6 @@ export const CodeSnippetCard = ({ inputIndex, codeSnippet }: OwnProps) => {
     if (!confirmed) return;
     buddy?.deleteUseCase(id);
   };
-
-  // const codeSnippetValues = [
-  //   { type: 'input', title: 'Label', value: label },
-  //   { type: 'input', title: 'Description', value: description },
-  //   { type: 'input', title: 'ChatbotID', value: chatbotID },
-  //   { type: 'code snippet', title: 'Code example', value },
-  //   { type: 'input', title: 'Link to docs', value },
-  // ];
 
   return (
     <>
@@ -69,23 +61,6 @@ export const CodeSnippetCard = ({ inputIndex, codeSnippet }: OwnProps) => {
             onClick={() => setOpenEditSection(!openEditSection)}
             className="cursor-pointer"
           />
-          {/* {openEditSection ? (
-            <button onClick={() => setOpenEditSection(false)} className="btn">
-              Close
-            </button>
-          ) : (
-            <>
-              <button onClick={() => setOpenEditSection(true)} className="btn">
-                Edit
-              </button>
-              <button
-                onClick={() => handleCodeSnippetDelete(id)}
-                className="btn ml-3"
-              >
-                Delete
-              </button>
-            </>
-          )} */}
         </div>
       </div>
       {openEditSection && (

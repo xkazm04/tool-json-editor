@@ -133,21 +133,18 @@ export const UseCaseEditSection = ({
         // replaces all old keys with new one
         Object.keys(currentUseCase).forEach((key) => {
           if (!first || !currentUseCase) return;
-          let oldValue = first[key as keyof typeof first];
           const newValue = currentUseCase[key as keyof typeof currentUseCase];
 
           first[key as keyof typeof first] = newValue as string &
             ('input' | 'code snippet') &
             (BuddyBuilderType[] | []);
         });
-        console.log('first', first);
       } else {
         first?.children.forEach((child) => {
           queue.push(child);
         });
       }
     }
-    console.log('current', current);
     buddy?.setBuddy(current);
   };
 
@@ -219,13 +216,6 @@ export const UseCaseEditSection = ({
           );
         }
       )}
-
-      {/* {currentUseCase.children.length === 1 && (
-        <AddCodeSnippetCard
-          codeSnippet={currentUseCase.children[0]}
-          setCodeSnippet={setCodeSnippet}
-        />
-      )} */}
       <div className="flex justify-between my-5">
         <div>
           <div className="relative group">
@@ -253,7 +243,7 @@ export const UseCaseEditSection = ({
           </div>
         </div>
         <div className="flex justify-center">
-          <button className="btn rounded-none hover:bg-transparent hover:text-[#FFFFFF66] text-[#FFFFFF66] bg-transparent border-none uppercase p-2 self-start cursor-pointer">
+          <button className="btn rounded-none hover:bg-transparent  text-[#FFFFFF66] bg-transparent border-none uppercase p-2 self-start cursor-pointer">
             Cancel
           </button>
           <button
