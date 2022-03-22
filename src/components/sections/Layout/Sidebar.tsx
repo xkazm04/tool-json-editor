@@ -23,7 +23,10 @@ export const Sidebar = () => {
                 } p-2 `}
                 key={index}
                 id={JSON.stringify(id)}
-                onClick={() => buddy.setActiveSchema(id)}
+                onClick={() => {
+                  
+                  buddy.setActiveSchema(id);
+                }}
               >
                 {attributes.Title}
               </li>

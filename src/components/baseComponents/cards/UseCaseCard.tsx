@@ -14,7 +14,6 @@ export const UseCaseCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
   const buddy = useBuddy();
 
   const closeEditSection = () => setOpenEditSection(false);
-  console.log('input', input);
   return (
     <>
       <div className="max-w-screen-lg m-auto bg-[#FFFFFF08]  p-5  grid grid-cols-[1fr_10%] justify-between items-center my-5 w-full">

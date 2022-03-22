@@ -114,6 +114,7 @@ export const useBuddyContext = (): BuddyContextType => {
   }, []);
 
   const setActiveSchema = (id: number) => {
+    setInputs([]);
     const activeSchema = schemas.find((schema) => schema.id === id);
     if (activeSchema) {
       setBuddy(activeSchema.attributes.tree);
