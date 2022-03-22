@@ -46,30 +46,12 @@ export const UseCaseEditSection = ({
 
   const buddy = useBuddy();
 
-  const deleteUseCase = (id: string) => {
-    let current = deepClone(currentUseCase);
-    const queue = [];
-    queue.push(current);
-
-    while (queue.length > 0) {
-      let сurrentNode = queue.shift();
-      const filtered = сurrentNode?.children.filter((child) => child.id !== id);
-      if (filtered?.length !== сurrentNode?.children.length) {
-        (сurrentNode as any).children = filtered;
-        setCurrentUseCase((prev) => ({ ...prev, ...current }));
-        return;
-      } else {
-        сurrentNode?.children.forEach((child) => queue.push(child));
-      }
-    }
-  };
-
   const handleUseCaseDelete = (id: string) => {
     const confirmed = window.confirm(
       'Are you sure you want to delete the use case?'
     );
     if (!confirmed) return;
-    deleteUseCase(id);
+    buddy?.deleteUseCase(id);
   };
 
   const handleCodeSnippetChange = (key: keyof BuddyBuilderType, value: any) => {
@@ -153,6 +135,10 @@ export const UseCaseEditSection = ({
   }, [newInput]);
 
   useEffect(() => {
+    setCurrentUseCase(input);
+  }, [input]);
+
+  useEffect(() => {
     labelInputRef.current?.focus();
   }, []);
 
@@ -206,7 +192,6 @@ export const UseCaseEditSection = ({
               ) : (
                 <AddCodeSnippetCard
                   id={input.id}
-                  deleteUseCase={deleteUseCase}
                   codeSnippet={currentUseCase.children[0]}
                   handleCodeSnippetChange={handleCodeSnippetChange}
                   setCodeSnippet={setCodeSnippet}

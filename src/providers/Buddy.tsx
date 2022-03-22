@@ -137,6 +137,7 @@ export const useBuddyContext = (): BuddyContextType => {
         сurrentNode?.children.forEach((child) => queue.push(child));
       }
     }
+    setBuddy(current);
   };
 
   const editUseCaseValue = (
@@ -260,7 +261,6 @@ export const useBuddyContext = (): BuddyContextType => {
     setBuddy(current);
     onFinish && onFinish();
   };
-
   useEffect(() => {
     if (!buddy) return;
     updateInputs(inputs);

@@ -5,6 +5,7 @@ import { UseCaseCard } from './cards/UseCaseCard';
 
 export const UseCases = (): JSX.Element => {
   const buddy = useBuddy();
+  console.log('buddy inputs', buddy?.inputs);
   return (
     <div>
       {buddy?.inputs.map((input, index) => {
