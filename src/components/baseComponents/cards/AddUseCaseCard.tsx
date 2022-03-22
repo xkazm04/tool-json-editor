@@ -117,7 +117,6 @@ export const UseCaseEditSection = ({
     setCurrentUseCase(copied);
   };
 
-  console.log('current', currentUseCase);
   const handleUseCaseEdit = (id: string) => {
     if (!buddy?.buddy) return;
 
@@ -209,6 +208,8 @@ export const UseCaseEditSection = ({
                 </>
               ) : (
                 <AddCodeSnippetCard
+                  id={input.id}
+                  deleteUseCase={deleteUseCase}
                   codeSnippet={currentUseCase.children[0]}
                   handleCodeSnippetChange={handleCodeSnippetChange}
                   setCodeSnippet={setCodeSnippet}
