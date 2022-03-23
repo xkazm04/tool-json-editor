@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useBuddy } from '../../../providers/Buddy';
 import { BuddyBuilderType } from '../../../types';
 import { CodeSnippet } from '../CodeSnippet';
 import { CodeSnippetEditSection } from './CodeSnippetEditCard';
