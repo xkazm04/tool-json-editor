@@ -6,7 +6,7 @@ import { OptionsCard } from './cards/OptionsCard';
 export const UseCases = (): JSX.Element => {
   const buddy = useBuddy();
   return (
-    <div>
+    <div className=" overflow-scroll no-scrollbar h-[95%]">
       {buddy?.inputs.map((input, index) => {
         if (
           input?.children.length > 0 &&

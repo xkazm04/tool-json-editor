@@ -173,7 +173,7 @@ export const EditOptionsCard = ({
   }, []);
 
   return (
-    <div className="max-w-screen-lg m-auto min-h-[300px] bg-[#FFFFFF08] my-5 p-5 relative">
+    <div className="min-h-[300px] bg-[#FFFFFF08] my-5 p-5 relative">
       <div className="grid grid-cols-[1fr_10%] ">
         <Input
           ref={labelInputRef}

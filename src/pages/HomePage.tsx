@@ -28,13 +28,13 @@ export const HomePage = () => {
     return <div>Loading...</div>;
   }
   return (
-    <>
+    <div className="h-screen">
       <Tabs
         activeTab={activeTab}
         tabs={['Editor', 'Tree respresentation']}
         onTabClick={handleTabChange}
       />
       {activeTab === 'Editor' ? <BuddyEditor /> : <D3Tree d3Tree={d3Tree} />}
-    </>
+    </div>
   );
 };

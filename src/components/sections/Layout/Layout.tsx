@@ -7,7 +7,7 @@ interface LayoutProps {
 
 export const Layout = ({ children }: LayoutProps): JSX.Element => {
   return (
-    <div className="w-screen flex">
+    <div className="w-screen flex h-screen overflow-hidden">
       <Sidebar />
       <main className="px-4 flex-1 w-full">{children}</main>
     </div>
