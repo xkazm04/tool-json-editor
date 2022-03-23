@@ -16,14 +16,6 @@ export const CodeSnippetCard = ({ codeSnippet }: OwnProps) => {
   const buddy = useBuddy();
 
   const closeEditSection = () => setOpenEditSection(false);
-  
-  const handleCodeSnippetDelete = (id: string) => {
-    const confirmed = window.confirm(
-      'Are you sure you want to delete code snippet?'
-    );
-    if (!confirmed) return;
-    buddy?.deleteUseCase(id);
-  };
 
   return (
     <>

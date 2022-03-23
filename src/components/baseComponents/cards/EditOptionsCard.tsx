@@ -168,10 +168,6 @@ export const EditOptionsCard = ({
     return inputsValues.every((value) => value !== ''.trim());
   };
 
-  useEffect(() => {
-    setCurrentUseCase(input);
-  }, []);
-
   return (
     <div className="min-h-[300px] bg-[#FFFFFF08] my-5 p-5 relative">
       <div className="grid grid-cols-[1fr_10%] ">

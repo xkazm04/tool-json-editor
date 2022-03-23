@@ -1,5 +1,4 @@
 import React from 'react';
-import { useBuddy } from '../../../providers/Buddy';
 import { Input } from '../Input';
 import { TextArea } from '../TextArea';
 import { CodeSnippetFields } from './EditOptionsCard';
