@@ -11,15 +11,15 @@ interface AddCodeSnippetCardProps {
   setCodeSnippet: React.Dispatch<React.SetStateAction<CodeSnippetFields>>;
   handleCodeSnippetChange: (key: keyof BuddyBuilderType, value: any) => void;
   id: string;
+  handleDraftCodeSnippetDelete: () => void;
 }
 
 export const AddCodeSnippetCard = ({
   codeSnippet,
-  setCodeSnippet,
   handleCodeSnippetChange,
+  handleDraftCodeSnippetDelete,
   id,
 }: AddCodeSnippetCardProps): JSX.Element => {
-  const buddy = useBuddy();
   return (
     <div className="grid grid-cols-[70%_20%] gap-x-10">
       <div>
@@ -66,7 +66,7 @@ export const AddCodeSnippetCard = ({
       </div>
       <div className="justify-self-center self-center">
         <DeleteIcon
-          onClick={() => buddy?.deleteUseCase(id)}
+          onClick={() => handleDraftCodeSnippetDelete()}
           className="cursor-pointer"
         />
       </div>

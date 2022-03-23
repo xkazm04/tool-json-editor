@@ -94,6 +94,12 @@ export const EditOptionsCard = ({
     setCurrentUseCase(copied);
   };
 
+  const handleDraftCodeSnippetDelete = () => {
+    const current = deepClone(currentUseCase);
+    current.children = [];
+    setCurrentUseCase(current);
+  };
+
   const handleUseCaseEdit = (id: string) => {
     if (!buddy?.buddy) return;
 
@@ -146,7 +152,7 @@ export const EditOptionsCard = ({
     }
     return inputsValues.every((value) => value !== ''.trim());
   };
-  
+
   useEffect(() => {
     setCurrentUseCase(input);
   }, []);
@@ -167,6 +173,7 @@ export const EditOptionsCard = ({
         />
       </div>
       <div className="divider"></div>
+      {/* shows either field for adding an option or code snippet fields */}
       {currentUseCase.children.map(
         ({ label, value, id, useCaseType }, index) => {
           return (
@@ -191,6 +198,7 @@ export const EditOptionsCard = ({
                   codeSnippet={currentUseCase.children[0]}
                   handleCodeSnippetChange={handleCodeSnippetChange}
                   setCodeSnippet={setCodeSnippet}
+                  handleDraftCodeSnippetDelete={handleDraftCodeSnippetDelete}
                 />
               )}
             </div>
@@ -226,7 +234,7 @@ export const EditOptionsCard = ({
           </button>
           <button
             onClick={() => handleUseCaseEdit(input.id)}
-            disabled={!inputsAreValid()}
+            disabled={!inputsAreValid() || currentUseCase.children.length == 0}
             className="btn border-none disabled:bg-dark-300  rounded-none hover:bg-green hover:text-[#2F3152] text-[#2F3152] uppercase p-2 bg-green self-start cursor-pointer"
           >
             Save changes
