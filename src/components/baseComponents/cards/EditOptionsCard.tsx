@@ -23,15 +23,13 @@ export interface CodeSnippetFields {
   linkToDocs: string;
 }
 
-export const UseCaseEditSection = ({
+export const EditOptionsCard = ({
   input,
   closeEditSection,
 }: OwnProps): JSX.Element => {
   const [currentUseCase, setCurrentUseCase] = useState<BuddyBuilderType>(input);
 
   const labelInputRef = useRef<HTMLInputElement | null>(null);
-  const newInputRef = useRef<HTMLInputElement | null>(null);
-  const [newInput, setNewInput] = useState({ visible: false, value: '' });
 
   const [codeSnippet, setCodeSnippet] = useState<CodeSnippetFields>({
     visible: false,
@@ -109,7 +107,7 @@ export const UseCaseEditSection = ({
       if (id === first?.id) {
         first.label = currentUseCase.label;
 
-        // replaces all old keys with new one
+        // replaces all old keys with new ones
         Object.keys(currentUseCase).forEach((key) => {
           if (!first || !currentUseCase) return;
           const newValue = currentUseCase[key as keyof typeof currentUseCase];
@@ -128,10 +126,6 @@ export const UseCaseEditSection = ({
   };
 
   useEffect(() => {
-    newInputRef.current?.focus();
-  }, [newInput]);
-
-  useEffect(() => {
     setCurrentUseCase(input);
   }, [input]);
 
@@ -140,14 +134,19 @@ export const UseCaseEditSection = ({
   }, []);
 
   const inputsAreValid = () => {
+    // inputs are valid when there is no code snippet added
+    if (!currentUseCase.children[0]) return true;
     const inputsValues = [];
-    for (let [key, value] of Object.entries(codeSnippet)) {
-      if (key !== 'chatbotId' && key !== 'linkToDocs') {
+    const currentEditingCodeSnippet = currentUseCase.children[0];
+    if (!currentEditingCodeSnippet) return;
+    for (let [key, value] of Object.entries(currentEditingCodeSnippet)) {
+      if (key === 'value' || key === 'description') {
         inputsValues.push(value);
       }
     }
     return inputsValues.every((value) => value !== ''.trim());
   };
+  
   useEffect(() => {
     setCurrentUseCase(input);
   }, []);
@@ -205,22 +204,19 @@ export const UseCaseEditSection = ({
             <div className="absolute top-5 left-0 hidden group-hover:flex group-hover:flex-col">
               {(currentUseCase.children.length > 0 &&
                 currentUseCase.children[0]['useCaseType'] === 'code snippet') ||
-              codeSnippet.visible ||
-              (newInput.visible && newInput.value === ''.trim()) ? null : (
+              codeSnippet.visible ? null : (
                 <span onClick={() => handleOptionAdd('input')} className="py-1">
                   Option
                 </span>
               )}
-              {currentUseCase.children?.length === 0 &&
-                !codeSnippet.visible &&
-                !newInput.visible && (
-                  <span
-                    className="py-1"
-                    onClick={() => handleOptionAdd('code snippet')}
-                  >
-                    Code
-                  </span>
-                )}
+              {currentUseCase.children?.length === 0 && !codeSnippet.visible && (
+                <span
+                  className="py-1"
+                  onClick={() => handleOptionAdd('code snippet')}
+                >
+                  Code
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -230,8 +226,8 @@ export const UseCaseEditSection = ({
           </button>
           <button
             onClick={() => handleUseCaseEdit(input.id)}
-            disabled={!inputsAreValid() && codeSnippet.visible}
-            className="btn border-none  rounded-none hover:bg-green hover:text-[#2F3152] text-[#2F3152] uppercase p-2 bg-green self-start cursor-pointer"
+            disabled={!inputsAreValid()}
+            className="btn border-none disabled:bg-dark-300  rounded-none hover:bg-green hover:text-[#2F3152] text-[#2F3152] uppercase p-2 bg-green self-start cursor-pointer"
           >
             Save changes
           </button>

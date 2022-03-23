@@ -1,7 +1,7 @@
 import React from 'react';
 import { useBuddy } from '../../providers/Buddy';
 import { CodeSnippetCard } from './cards/CodeSnippetCard';
-import { UseCaseCard } from './cards/UseCaseCard';
+import { OptionsCard } from './cards/OptionsCard';
 
 export const UseCases = (): JSX.Element => {
   const buddy = useBuddy();
@@ -20,7 +20,7 @@ export const UseCases = (): JSX.Element => {
             />
           );
         }
-        return <UseCaseCard key={index} inputIndex={index} input={input} />;
+        return <OptionsCard key={index} inputIndex={index} input={input} />;
       })}
     </div>
   );

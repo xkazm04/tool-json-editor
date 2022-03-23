@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BuddyBuilderType } from '../../../types';
-import { UseCaseEditSection } from './AddUseCaseCard';
+import { EditOptionsCard } from './EditOptionsCard';
 import { useBuddy } from '../../../providers/Buddy';
 import { ReactComponent as EditIcon } from '../../../assets/icons/edit.svg';
 
@@ -9,11 +9,22 @@ interface OwnProps {
   inputIndex: number;
 }
 
-export const UseCaseCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
+export const OptionsCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
   const [openEditSection, setOpenEditSection] = useState(false);
   const buddy = useBuddy();
 
   const closeEditSection = () => setOpenEditSection(false);
+
+  const sortByAlphabet = (a: BuddyBuilderType, b: BuddyBuilderType) => {
+    if (a.value < b.value) {
+      return -1;
+    }
+    if (a.value > b.value) {
+      return 1;
+    }
+    return 0;
+  };
+
   return (
     <>
       <div className="max-w-screen-lg m-auto bg-[#FFFFFF08]  p-5  grid grid-cols-[1fr_10%] justify-between items-center my-5 w-full">
@@ -25,15 +36,7 @@ export const UseCaseCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
           >
             <option selected={true} disabled value=""></option>
             {input?.children
-              .sort((a, b) => {
-                if (a.value < b.value) {
-                  return -1;
-                }
-                if (a.value > b.value) {
-                  return 1;
-                }
-                return 0;
-              })
+              .sort(sortByAlphabet)
               .map(({ value, id }, index) => {
                 return (
                   <option key={index} value={id}>
@@ -51,7 +54,7 @@ export const UseCaseCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
         </div>
       </div>
       {openEditSection && (
-        <UseCaseEditSection closeEditSection={closeEditSection} input={input} />
+        <EditOptionsCard closeEditSection={closeEditSection} input={input} />
       )}
     </>
   );

@@ -2,7 +2,7 @@ import React from 'react';
 import { useBuddy } from '../../../providers/Buddy';
 import { Input } from '../Input';
 import { TextArea } from '../TextArea';
-import { CodeSnippetFields } from './AddUseCaseCard';
+import { CodeSnippetFields } from './EditOptionsCard';
 import { ReactComponent as DeleteIcon } from '../../../assets/icons/delete.svg';
 import { BuddyBuilderType } from '../../../types';
 
