@@ -34,7 +34,7 @@ export const OptionsCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
             onChange={(e) => buddy?.selectOption(e.target.value, inputIndex)}
             className="bg-[#FFFFFF0F] outline-none p-2 w-full  mt-2"
           >
-            <option selected={true} disabled value=""></option>
+            <option selected={true} disabled></option>
             {input?.children
               .sort(sortByAlphabet)
               .map(({ value, id }, index) => {

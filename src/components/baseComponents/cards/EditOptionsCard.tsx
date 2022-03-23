@@ -9,6 +9,7 @@ import { AddCodeSnippetCard } from './AddCodeSnippetCard';
 import { createUseCase } from '../../../utils/createUseCase';
 import { deepClone } from '../../../utils/deepClone';
 import { createCodeSnippet } from '../../../utils/createCodeSnippet';
+import { saveSchema } from '../../../utils/schemaAPI';
 
 interface OwnProps {
   input: BuddyBuilderType;
@@ -129,6 +130,20 @@ export const EditOptionsCard = ({
       }
     }
     buddy?.setBuddy(current);
+    saveSchema(
+      buddy?.currentlyEditingSchema,
+      current,
+      () =>
+        buddy.addNotification(
+          'success',
+          'Schema has been successfully updated'
+        ),
+      () =>
+        buddy.addNotification(
+          'error',
+          'Something went wrong please contact our support team'
+        )
+    );
   };
 
   useEffect(() => {
@@ -206,26 +221,24 @@ export const EditOptionsCard = ({
         }
       )}
       <div className="flex justify-between my-5">
-        <div>
-          <div className="relative group">
-            <PlusIcon />
-            <div className="absolute top-5 left-0 hidden group-hover:flex group-hover:flex-col">
-              {(currentUseCase.children.length > 0 &&
-                currentUseCase.children[0]['useCaseType'] === 'code snippet') ||
-              codeSnippet.visible ? null : (
-                <span onClick={() => handleOptionAdd('input')} className="py-1">
-                  Option
-                </span>
-              )}
-              {currentUseCase.children?.length === 0 && !codeSnippet.visible && (
-                <span
-                  className="py-1"
-                  onClick={() => handleOptionAdd('code snippet')}
-                >
-                  Code
-                </span>
-              )}
-            </div>
+        <div className="relative group">
+          <PlusIcon />
+          <div className="absolute top-5 left-0 hidden group-hover:flex group-hover:flex-col">
+            {(currentUseCase.children.length > 0 &&
+              currentUseCase.children[0]['useCaseType'] === 'code snippet') ||
+            codeSnippet.visible ? null : (
+              <span onClick={() => handleOptionAdd('input')} className="py-1">
+                Option
+              </span>
+            )}
+            {currentUseCase.children?.length === 0 && !codeSnippet.visible && (
+              <span
+                className="py-1"
+                onClick={() => handleOptionAdd('code snippet')}
+              >
+                Code
+              </span>
+            )}
           </div>
         </div>
         <div className="flex justify-center">
@@ -234,7 +247,7 @@ export const EditOptionsCard = ({
           </button>
           <button
             onClick={() => handleUseCaseEdit(input.id)}
-            disabled={!inputsAreValid() || currentUseCase.children.length == 0}
+            disabled={!inputsAreValid() || currentUseCase.label === ''.trim()}
             className="btn border-none disabled:bg-dark-300  rounded-none hover:bg-green hover:text-[#2F3152] text-[#2F3152] uppercase p-2 bg-green self-start cursor-pointer"
           >
             Save changes

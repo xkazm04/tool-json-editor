@@ -6,6 +6,7 @@ import { TextArea } from '../TextArea';
 import { ReactComponent as CloseIcon } from '../../../assets/icons/close.svg';
 import { deepClone } from '../../../utils/deepClone';
 import { ReactComponent as DeleteIcon } from '../../../assets/icons/delete.svg';
+import { saveSchema } from '../../../utils/schemaAPI';
 
 interface OwnProps {
   codeSnippet: BuddyBuilderType;
@@ -26,7 +27,6 @@ export const CodeSnippetEditSection = ({
 }: OwnProps): JSX.Element => {
   const buddy = useBuddy();
   const labelInputRef = useRef<HTMLInputElement | null>(null);
-  const [labelValue, setLabelValue] = useState(label);
   const [codeSnippet, setCodeSnippet] = useState({
     description,
     label,
@@ -58,6 +58,12 @@ export const CodeSnippetEditSection = ({
       }
     }
     buddy.setBuddy(current);
+    saveSchema(
+      buddy?.currentlyEditingSchema,
+      current,
+      () => buddy.addNotification('success', 'Schema has been updated'),
+      () => buddy.addNotification('error', 'Something went wrong')
+    );
   };
 
   return (
@@ -140,7 +146,6 @@ export const CodeSnippetEditSection = ({
         </button>
         <button
           onClick={() => handleCodeSnippetEdit(id)}
-          // disabled={!inputsAreValid() && codeSnippet.visible}
           className="btn border-none  rounded-none hover:bg-green hover:text-[#2F3152] text-[#2F3152] uppercase p-2 bg-green self-start cursor-pointer"
         >
           Save changes

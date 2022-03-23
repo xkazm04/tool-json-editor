@@ -3,7 +3,7 @@ import { BuddyBuilderType } from '../types';
 import { createCodeSnippet } from '../utils/createCodeSnippet';
 import { createUseCase } from '../utils/createUseCase';
 import { deepClone } from '../utils/deepClone';
-import { getSchemas } from '../utils/schemaAPI';
+import { getSchemas, saveSchema } from '../utils/schemaAPI';
 
 interface SchemaAttributes {
   Title: string;
@@ -133,6 +133,12 @@ export const useBuddyContext = (): BuddyContextType => {
       if (filtered?.length !== сurrentNode?.children.length) {
         (сurrentNode as any).children = filtered;
         setBuddy((prev) => ({ ...prev, ...current }));
+        saveSchema(
+          currentlyEditingSchema,
+          current,
+          () => addNotification('success', 'Schema has been updated'),
+          () => addNotification('error', 'Something went wrong')
+        );
         return;
       } else {
         сurrentNode?.children.forEach((child) => queue.push(child));
