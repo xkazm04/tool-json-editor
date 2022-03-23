@@ -14,15 +14,7 @@ interface OwnProps {
 }
 
 export const CodeSnippetEditSection = ({
-  codeSnippet: {
-    description,
-    children,
-    id,
-    label,
-    value,
-    chatbotID,
-    linkToDocs,
-  },
+  codeSnippet: { description, id, label, value, chatbotID, linkToDocs },
   closeEditSection,
 }: OwnProps): JSX.Element => {
   const buddy = useBuddy();
@@ -46,7 +38,7 @@ export const CodeSnippetEditSection = ({
       const first = queue.shift();
 
       if (first?.id === id) {
-        Object.keys(codeSnippet).forEach((key, index) => {
+        Object.keys(codeSnippet).forEach((key) => {
           const newValue = codeSnippet[key as keyof typeof codeSnippet];
 
           first[key as keyof typeof first] = newValue as string &
