@@ -13,7 +13,6 @@ interface OwnProps {
 export const CodeSnippetCard = ({ codeSnippet }: OwnProps) => {
   const [openEditSection, setOpenEditSection] = useState(false);
   const { description, chatbotID, value, label, linkToDocs } = codeSnippet;
-  const buddy = useBuddy();
 
   const closeEditSection = () => setOpenEditSection(false);
 
