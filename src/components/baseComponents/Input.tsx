@@ -18,7 +18,7 @@ export const Input = React.forwardRef(
           {...props}
           type="text"
           placeholder={placeholder}
-          className="p-2 bg-input_bg outline-none"
+          className="p-2 bg-input_bg outline-none text-light-400"
         />
       </div>
     );

@@ -9,7 +9,7 @@ export const Layout = ({ children }: LayoutProps): JSX.Element => {
   return (
     <div className="w-screen flex h-screen overflow-hidden">
       <Sidebar />
-      <main className="px-4 flex-1 w-full">{children}</main>
+      <main className="px-4 flex-1 w-full bg-dark-main">{children}</main>
     </div>
   );
 };

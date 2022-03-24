@@ -13,11 +13,11 @@ export const Sidebar = (): JSX.Element => {
     <aside
       className={`h-full relative ${
         open ? 'w-[15%]' : 'w-[5%]'
-      }  bg-[#FFFFFF08] pl-4`}
+      }  bg-dark-sidebar pl-4`}
     >
       <div
         onClick={() => setOpen(!open)}
-        className="block h-8 w-8 absolute z-50 rounded-full bg-[#FFFFFF08] -right-4 bottom-14 cursor-pointer"
+        className="block h-8 w-8 absolute z-50 rounded-full bg-dark-main -right-4 bottom-14 cursor-pointer"
       >
         <ChvronRight
           className={`h-8 w-8 ${open ? 'rotate-180' : 'rotate-0'} `}
