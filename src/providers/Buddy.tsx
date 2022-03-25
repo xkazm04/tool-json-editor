@@ -116,6 +116,7 @@ export const useBuddyContext = (): BuddyContextType => {
 
   useEffect(() => {
     loadSchemas();
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, []);
 
   const setActiveSchema = (id: number) => {

@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-
-export const useDarkMode = (initialState: boolean) =>{
-    const [darkMode, setDarkMode] = useState(initialState);
+export const useDarkMode = (initialState: boolean) => {
+  const [darkMode, setDarkMode] = useState(initialState);
 
   useEffect(() => {
-    const preferedThemeMode = localStorage.getItem("theme") || "";
+    const preferedThemeMode = localStorage.getItem('theme') || '';
     if (!preferedThemeMode) return;
-    if (preferedThemeMode === "dark") {
+    if (preferedThemeMode === 'dark') {
       setDarkMode(true);
     } else {
       setDarkMode(false);
@@ -16,13 +15,13 @@ export const useDarkMode = (initialState: boolean) =>{
 
   useEffect(() => {
     if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
     } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
     }
   }, [darkMode]);
 
-  return {darkMode, setDarkMode}
-}
+  return { darkMode, setDarkMode };
+};

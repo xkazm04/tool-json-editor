@@ -9,7 +9,9 @@ type OwnProps = {
 
 export const Tabs = ({ tabs, activeTab, onTabClick, className }: OwnProps) => {
   return (
-    <div className={`flex items-center border-b-1 border-red-400 ${className}`}>
+    <div
+      className={`flex items-center border-b-1 border-red-400  ${className}`}
+    >
       {tabs.map((tab, index) => {
         return (
           <div
