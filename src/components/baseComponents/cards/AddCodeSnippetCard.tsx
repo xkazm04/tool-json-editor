@@ -20,7 +20,7 @@ export const AddCodeSnippetCard = ({
   id,
 }: AddCodeSnippetCardProps): JSX.Element => {
   return (
-    <div className="grid grid-cols-[70%_20%] gap-x-10">
+    <>
       <div>
         <TextArea
           value={codeSnippet.description}
@@ -43,6 +43,7 @@ export const AddCodeSnippetCard = ({
           label="Chatbot ID"
         />
         <TextArea
+          className="h-44"
           value={codeSnippet.value}
           onChange={(e) =>
             handleCodeSnippetChange(
@@ -69,6 +70,6 @@ export const AddCodeSnippetCard = ({
           className="cursor-pointer"
         />
       </div>
-    </div>
+    </>
   );
 };

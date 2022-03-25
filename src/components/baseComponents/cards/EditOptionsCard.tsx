@@ -10,6 +10,7 @@ import { createUseCase } from '../../../utils/createUseCase';
 import { deepClone } from '../../../utils/deepClone';
 import { createCodeSnippet } from '../../../utils/createCodeSnippet';
 import { saveSchema } from '../../../utils/schemaAPI';
+import { useOutsideClick } from '../../../hooks/useOutsideClick';
 
 interface OwnProps {
   input: BuddyBuilderType;
@@ -30,6 +31,8 @@ export const EditOptionsCard = ({
 }: OwnProps): JSX.Element => {
   const [currentUseCase, setCurrentUseCase] = useState<BuddyBuilderType>(input);
 
+  const addOptionsContainer = useRef<HTMLDivElement | null>(null);
+
   const labelInputRef = useRef<HTMLInputElement | null>(null);
 
   const [codeSnippet, setCodeSnippet] = useState<CodeSnippetFields>({
@@ -40,7 +43,14 @@ export const EditOptionsCard = ({
     linkToDocs: '',
   });
 
+  const [openAddOptions, setOpenAddOptions] = useState(false);
+
   const buddy = useBuddy();
+
+  useOutsideClick(
+    addOptionsContainer,
+    () => openAddOptions && setOpenAddOptions(false)
+  );
 
   const handleUseCaseDelete = (id: string) => {
     const confirmed = window.confirm(
@@ -217,23 +227,43 @@ export const EditOptionsCard = ({
         }
       )}
       <div className="flex justify-between my-5">
-        <div className="relative group">
-          <PlusIcon />
-          <div className="absolute top-5 left-0 hidden group-hover:flex group-hover:flex-col">
-            {(currentUseCase.children.length > 0 &&
-              currentUseCase.children[0]['useCaseType'] === 'code snippet') ||
-            codeSnippet.visible ? null : (
-              <span onClick={() => handleOptionAdd('input')} className="py-1">
-                Option
-              </span>
-            )}
-            {currentUseCase.children?.length === 0 && !codeSnippet.visible && (
-              <span
-                className="py-1"
-                onClick={() => handleOptionAdd('code snippet')}
-              >
-                Code
-              </span>
+        <div className="relative ">
+          <PlusIcon
+            className="cursor-pointer"
+            onClick={() => setOpenAddOptions(!openAddOptions)}
+          />
+          <div
+            ref={addOptionsContainer}
+            className="absolute top-5 left-0  flex flex-col border-2 px-2 my-2 bg-slate-600 text-white  border-slate-400"
+          >
+            {openAddOptions && (
+              <>
+                {(currentUseCase.children.length > 0 &&
+                  currentUseCase.children[0]['useCaseType'] ===
+                    'code snippet') ||
+                codeSnippet.visible ? null : (
+                  <span
+                    onClick={() => {
+                      handleOptionAdd('input');
+                      setOpenAddOptions(false);
+                    }}
+                    className="p-1 text-center cursor-pointer"
+                  >
+                    Option
+                  </span>
+                )}
+                {currentUseCase.children?.length === 0 && !codeSnippet.visible && (
+                  <span
+                    className="py-1 text-center cursor-pointer"
+                    onClick={() => {
+                      handleOptionAdd('code snippet');
+                      setOpenAddOptions(false);
+                    }}
+                  >
+                    Code
+                  </span>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -244,7 +274,7 @@ export const EditOptionsCard = ({
           <button
             onClick={() => handleUseCaseEdit(input.id)}
             disabled={!inputsAreValid() || currentUseCase.label === ''.trim()}
-            className="btn border-none disabled:bg-dark-300  rounded-none hover:bg-green hover:text-[#2F3152] text-[#2F3152] uppercase p-2 bg-green self-start cursor-pointer"
+            className="btn border-none disabled:bg-dark-300 disabled:text-slate-900   rounded-none hover:bg-green hover:text-[#2F3152] text-[#2F3152] uppercase p-2 bg-green self-start cursor-pointer"
           >
             Save changes
           </button>

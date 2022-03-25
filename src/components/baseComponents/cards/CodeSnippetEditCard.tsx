@@ -27,6 +27,14 @@ export const CodeSnippetEditSection = ({
     linkToDocs,
   });
 
+  const handleCodeSnippetDelete = () => {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete the code snippet?'
+    );
+    if (!confirmed) return;
+    buddy?.deleteUseCase(id);
+  };
+
   const handleCodeSnippetEdit = (id: string) => {
     if (!buddy?.buddy) return;
     const current = deepClone(buddy?.buddy);
@@ -127,7 +135,7 @@ export const CodeSnippetEditSection = ({
         </div>
         <div className="justify-self-center self-center">
           <DeleteIcon
-            onClick={() => buddy?.deleteUseCase(id)}
+            onClick={handleCodeSnippetDelete}
             className="cursor-pointer"
           />
         </div>

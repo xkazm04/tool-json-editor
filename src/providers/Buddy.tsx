@@ -66,6 +66,7 @@ interface BuddyContextType {
   notifications: NotificationType[];
   addNotification: (type: 'error' | 'success', message: string) => void;
   deleteNotifications: () => void;
+  loadSchemas: () => void;
 }
 
 export const BuddyContext = React.createContext<BuddyContextType | null>(null);
@@ -90,7 +91,7 @@ export const useBuddyContext = (): BuddyContextType => {
     setNotifications([]);
   };
 
-  useEffect(() => {
+  const loadSchemas = () => {
     setLoadingSchema(true);
     getSchemas()
       .then((schema) => {
@@ -111,10 +112,14 @@ export const useBuddyContext = (): BuddyContextType => {
         }
       })
       .finally(() => setLoadingSchema(false));
+  };
+
+  useEffect(() => {
+    loadSchemas();
   }, []);
 
   const setActiveSchema = (id: number) => {
-    setInputs([]);
+    currentlyEditingSchema !== id && setInputs([]);
     const activeSchema = schemas.find((schema) => schema.id === id);
     if (activeSchema) {
       setBuddy(activeSchema.attributes.tree);
@@ -289,6 +294,7 @@ export const useBuddyContext = (): BuddyContextType => {
     notifications,
     addNotification,
     deleteNotifications,
+    loadSchemas,
   };
 };
 

@@ -22,6 +22,9 @@ module.exports = {
         gold: '#FFB800',
       }
     },
+    borderWidth: {
+      1: "1px"
+    }
   },
   plugins: [require("daisyui")],
 };

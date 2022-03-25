@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { HTMLProps } from 'react';
 
 type OwnProps = {
   tabs: string[];
   activeTab: string;
   // eslint-disable-next-line no-unused-vars
   onTabClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-};
+} & HTMLProps<HTMLDivElement>;
 
-export const Tabs = ({ tabs, activeTab, onTabClick }: OwnProps) => {
+export const Tabs = ({ tabs, activeTab, onTabClick, className }: OwnProps) => {
   return (
-    <div className="flex items-center border-b-1 border-red-400">
+    <div className={`flex items-center border-b-1 border-red-400 ${className}`}>
       {tabs.map((tab, index) => {
         return (
           <div

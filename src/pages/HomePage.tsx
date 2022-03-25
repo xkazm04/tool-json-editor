@@ -30,6 +30,7 @@ export const HomePage = () => {
   return (
     <div className="h-screen">
       <Tabs
+        className="h-12"
         activeTab={activeTab}
         tabs={['Editor', 'Tree respresentation']}
         onTabClick={handleTabChange}
