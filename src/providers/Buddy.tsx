@@ -129,6 +129,7 @@ export const useBuddyContext = (): BuddyContextType => {
   };
 
   const deleteUseCase = (id: string) => {
+    if(!id) return;
     let current = deepClone(buddy as BuddyBuilderType);
     const queue = [];
     queue.push(current);

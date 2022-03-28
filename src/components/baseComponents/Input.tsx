@@ -5,14 +5,12 @@ interface OwnProps extends React.HTMLProps<HTMLInputElement> {
 
 export const Input = React.forwardRef(
   (
-    { labelText = '', placeholder = '', ...props }: OwnProps,
+    { labelText = '', placeholder = '', label, ...props }: OwnProps,
     ref: React.ForwardedRef<HTMLInputElement>
   ): JSX.Element => {
     return (
       <div className={`${props.className} form-control py-1`}>
-        <label className="label">
-          <span className="label-text text-white">{labelText}</span>
-        </label>
+        <label className="label label-text text-white">{label}</label>
         <input
           ref={ref}
           {...props}

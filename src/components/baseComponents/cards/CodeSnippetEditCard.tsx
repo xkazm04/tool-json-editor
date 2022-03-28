@@ -31,7 +31,7 @@ export const CodeSnippetEditSection = ({
     const confirmed = window.confirm(
       'Are you sure you want to delete the code snippet?'
     );
-    if (!confirmed) return;
+    if (!confirmed || !id) return;
     buddy?.deleteUseCase(id);
   };
 
@@ -68,7 +68,7 @@ export const CodeSnippetEditSection = ({
 
   return (
     <div className="max-w-screen-lg m-auto min-h-[300px] bg-[#FFFFFF08] my-5 p-5 relative">
-      <div className="grid grid-cols-[70%_20%] gap-x-10">
+      <div className="grid grid-cols-[90%_10%] gap-x-2">
         <div>
           <div>
             <Input
@@ -86,7 +86,7 @@ export const CodeSnippetEditSection = ({
           <div className="divider"></div>
           <div>
             <Input
-              labelText="Description"
+              label="Description"
               value={codeSnippet.description}
               onChange={(e) =>
                 setCodeSnippet((prev) => ({
@@ -97,7 +97,7 @@ export const CodeSnippetEditSection = ({
             />
           </div>
           <div>
-            <TextArea
+            <Input
               label="Chatbot ID"
               value={codeSnippet.chatbotID}
               onChange={(e) =>
@@ -110,6 +110,7 @@ export const CodeSnippetEditSection = ({
           </div>
           <div>
             <TextArea
+              className="h-52"
               label="Code example"
               value={codeSnippet.codeExample}
               onChange={(e) =>
@@ -121,7 +122,7 @@ export const CodeSnippetEditSection = ({
             />
           </div>
           <div>
-            <TextArea
+            <Input
               label="Link to docs"
               value={codeSnippet.linkToDocs}
               onChange={(e) =>

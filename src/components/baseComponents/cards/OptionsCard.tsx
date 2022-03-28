@@ -27,9 +27,11 @@ export const OptionsCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
 
   return (
     <>
-      <div className="max-w-screen-lg m-auto bg-dark-card  p-5  grid grid-cols-[1fr_10%] justify-between items-center my-5 w-full">
+      <div className="max-w-screen-lg m-auto bg-dark-card p-5 grid grid-cols-[1fr_10%] justify-between items-center my-5 w-full">
         <div>
-          <label className="block">{input?.label || 'Select option'}</label>
+          <label className="block text-slate-300">
+            {input?.label || 'Select option'}
+          </label>
           <select
             onChange={(e) => buddy?.selectOption(e.target.value, inputIndex)}
             className="bg-[#FFFFFF0F] outline-none p-2 w-full  mt-2"

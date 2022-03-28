@@ -56,7 +56,7 @@ export const EditOptionsCard = ({
     const confirmed = window.confirm(
       'Are you sure you want to delete the use case?'
     );
-    if (!confirmed) return;
+    if (!confirmed || !id) return;
     buddy?.deleteUseCase(id);
   };
 
