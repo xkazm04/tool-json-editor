@@ -52,6 +52,10 @@ interface BuddyContextType {
   schemas: Schema[];
   currentlyEditingSchema: number | null;
   setBuddy: React.Dispatch<React.SetStateAction<BuddyBuilderType | null>>;
+  currentlyEditing: BuddyBuilderType | null;
+  setCurrentlyEditing: React.Dispatch<
+    React.SetStateAction<BuddyBuilderType | null>
+  >;
 
   addUseCaseOption: <T extends UseCaseType>(
     useCaseType: T,
@@ -79,9 +83,13 @@ export const useBuddyContext = (): BuddyContextType => {
   const [currentlyEditingSchema, setCurrentlyEditingSchema] = useState<
     number | null
   >(null);
+
   const [notifications, setNotifications] = React.useState<
     NotificationType[] | []
   >([]);
+
+  const [currentlyEditing, setCurrentlyEditing] =
+    useState<BuddyBuilderType | null>(null);
 
   const addNotification = (type: NotificationType['type'], message: string) => {
     setNotifications((prev) => [...prev, { type, message }]);
@@ -129,7 +137,7 @@ export const useBuddyContext = (): BuddyContextType => {
   };
 
   const deleteUseCase = (id: string) => {
-    if(!id) return;
+    if (!id) return;
     let current = deepClone(buddy as BuddyBuilderType);
     const queue = [];
     queue.push(current);
@@ -194,9 +202,12 @@ export const useBuddyContext = (): BuddyContextType => {
     }
 
     const useCase = findUseCase(id);
-
-    if (!useCase || useCase.useCaseType === 'code snippet') return;
-    setInputs((prev) => [...prev, useCase]);
+    if (!useCase) return;
+    if (useCase.children[0].useCaseType === 'code snippet') {
+      setCurrentlyEditing(useCase.children[0]);
+    } else {
+      setInputs((prev) => [...prev, useCase]);
+    }
   };
 
   const updateInputs = (inputs: BuddyBuilderType[]) => {
@@ -227,14 +238,13 @@ export const useBuddyContext = (): BuddyContextType => {
     let current = buddy;
     const queue = [];
     queue.push(current);
-
     while (queue.length > 0) {
       if (!current) return null;
       current = queue.shift() as BuddyBuilderType;
       if (current?.id === id) {
         searched = current;
       } else {
-        current.children.forEach((child) => queue.push(child));
+        current.children?.forEach((child) => queue.push(child));
       }
     }
     return searched;
@@ -297,6 +307,8 @@ export const useBuddyContext = (): BuddyContextType => {
     addNotification,
     deleteNotifications,
     loadSchemas,
+    currentlyEditing,
+    setCurrentlyEditing,
   };
 };
 

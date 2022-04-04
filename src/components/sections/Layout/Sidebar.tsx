@@ -44,8 +44,8 @@ export const Sidebar = (): JSX.Element => {
   return (
     <aside
       className={`h-full relative ${
-        open ? 'w-[15%]' : 'w-[5%]'
-      }  bg-dark-sidebar `}
+        open ? 'w-[20%]' : 'w-[5%]'
+      }  bg-dark-sidebar pl-4`}
     >
       <div
         onClick={() => setOpen(!open)}
@@ -59,7 +59,7 @@ export const Sidebar = (): JSX.Element => {
         <div className="flex justify-center">
           <Logo />
         </div>
-        <ul className="flex flex-col pl-4">
+        <ul className="flex flex-col w-full">
           {open &&
             buddy?.schemas.map(({ id, attributes }, index) => {
               const activeSchema = buddy.currentlyEditingSchema === id;
@@ -67,7 +67,7 @@ export const Sidebar = (): JSX.Element => {
                 <li
                   className={`${
                     activeSchema ? ' text-white bg-violet' : 'text-dark-300'
-                  } p-2 `}
+                  } p-2  `}
                   key={index}
                   id={JSON.stringify(id)}
                   onClick={() => {

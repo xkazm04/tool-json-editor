@@ -6,7 +6,6 @@ import { ReactComponent as EditIcon } from '../../../assets/icons/edit.svg';
 
 interface OwnProps {
   codeSnippet: BuddyBuilderType;
-  inputIndex: number;
 }
 
 export const CodeSnippetCard = ({ codeSnippet }: OwnProps) => {
@@ -17,7 +16,7 @@ export const CodeSnippetCard = ({ codeSnippet }: OwnProps) => {
 
   return (
     <>
-      <div className="max-w-screen-lg m-auto bg-[#FFFFFF08] p-5 grid grid-cols-[90%_10%] justify-center items-center my-5 w-full">
+      <div className="max-w-screen-lg m-auto bg-[#FFFFFF08] p-5  grid grid-cols-[90%_10%] justify-center items-center  w-full">
         <div>
           <div className="mb-5">
             <label className="font-bold text-white block my-1">Label</label>

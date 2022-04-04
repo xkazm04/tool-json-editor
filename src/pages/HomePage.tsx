@@ -48,10 +48,7 @@ export const HomePage = () => {
           onTabClick={handleTabChange}
         />
         <button
-          onClick={() => {
-            console.log('scli');
-            setShowSchema(true);
-          }}
+          onClick={() => setShowSchema(true)}
           className="bg-[#562AD0] uppercase py-2 px-4 outline-none border-none text-white"
         >
           Show Code

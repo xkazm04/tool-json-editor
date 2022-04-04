@@ -7,9 +7,14 @@ import { ReactComponent as EditIcon } from '../../../assets/icons/edit.svg';
 interface OwnProps {
   input: BuddyBuilderType;
   inputIndex: number;
+  lastInput: boolean;
 }
 
-export const OptionsCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
+export const OptionsCard = ({
+  input,
+  inputIndex,
+  lastInput,
+}: OwnProps): JSX.Element => {
   const [openEditSection, setOpenEditSection] = useState(false);
   const buddy = useBuddy();
 
@@ -26,8 +31,18 @@ export const OptionsCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
   };
 
   return (
-    <>
-      <div className="max-w-screen-lg m-auto bg-dark-card p-5 grid grid-cols-[1fr_10%] justify-between items-center my-5 w-full">
+    <div className="flex justify-between gap-4">
+      <div className="flex flex-col items-center">
+        <div className="w-8 h-8 bg-[#562AD0] text-center  text-white">
+          <span className="align-middle">{inputIndex + 1}</span>
+        </div>
+        <div
+          className={`flex-1 w-0 border-1 border-[#3F424B] ${
+            lastInput ? 'hidden' : 'block'
+          }`}
+        ></div>
+      </div>
+      <div className="max-w-screen-lg m-auto bg-dark-card p-5 grid grid-cols-[1fr_10%] justify-between items-center mb-5 w-full">
         <div>
           <label className="block text-slate-300">
             {input?.label || 'Select option'}
@@ -50,7 +65,9 @@ export const OptionsCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
         </div>
         <div className="flex justify-end self-end pb-2">
           <EditIcon
-            onClick={() => setOpenEditSection(true)}
+            onClick={() =>
+              buddy?.setCurrentlyEditing((prev) => ({ ...prev, ...input }))
+            }
             className="cursor-pointer"
           />
         </div>
@@ -58,6 +75,6 @@ export const OptionsCard = ({ input, inputIndex }: OwnProps): JSX.Element => {
       {openEditSection && (
         <EditOptionsCard closeEditSection={closeEditSection} input={input} />
       )}
-    </>
+    </div>
   );
 };
