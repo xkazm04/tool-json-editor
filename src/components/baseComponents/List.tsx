@@ -31,7 +31,9 @@ export const List = ({
             <span className="w-2 h-2 bg-red-500 block translate-x-1/2 translate-y-1/2"></span>
           )}
         </span>
-        <span className={`${showNested && 'text-white'} text-sm `}>
+        <span
+          className={`${showNested ? 'text-white' : 'text-[#8A90A3]'} text-sm `}
+        >
           {title}
         </span>
       </p>
