@@ -4,7 +4,11 @@ interface TextAreaProps extends React.HTMLProps<HTMLTextAreaElement> {
   label: string;
 }
 
-export const TextArea = ({ label, ...props }: TextAreaProps): JSX.Element => {
+export const TextArea = ({
+  label,
+  className,
+  ...props
+}: TextAreaProps): JSX.Element => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
@@ -19,7 +23,7 @@ export const TextArea = ({ label, ...props }: TextAreaProps): JSX.Element => {
       <textarea
         ref={textAreaRef}
         {...props}
-        className="textarea h-18  text-green-600 bg-stone-700"
+        className={`${className} p-2 bg-[#FFFFFF0F] outline-none text-green-600 bg-stone-700`}
         placeholder="Insert your lovely code snippet"
       ></textarea>
     </div>

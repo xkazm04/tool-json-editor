@@ -1,27 +1,12 @@
-import React, { useState } from 'react';
-import { BuddyEditorControllers } from './BuddyEditorControllers';
-import { Schema } from './Schema';
+import React from 'react';
 import { UseCases } from '../baseComponents/UseCases';
+import { EditSection } from './EditSection';
 
 export const BuddyEditor = () => {
-  const [showSchema, setShowSchema] = useState(true);
-
-  const makeSchemaVisible = () => setShowSchema(!showSchema);
-
   return (
-    <div>
-      <BuddyEditorControllers
-        setShowSchema={makeSchemaVisible}
-        schemaIsVisible={showSchema}
-      />
-      <div
-        className={`grid  m-auto ${
-          showSchema ? 'grid-cols-[47%_47%] gap-[6%]' : 'grid-cols-[100%]'
-        }`}
-      >
-        <UseCases />
-        <Schema showSchema={showSchema} />
-      </div>
+    <div className="w-full grid grid-cols-[48%_48%] gap-[2%] h-screen">
+      <UseCases />
+      <EditSection />
     </div>
   );
 };

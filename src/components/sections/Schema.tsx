@@ -1,25 +1,26 @@
-import React from "react";
-import { useBuddy } from "../../providers/Buddy";
+import React from 'react';
+import { useBuddy } from '../../providers/Buddy';
+import { ReactComponent as CloseIcon } from '../../assets/icons/close.svg';
 
-interface SchemaProps {
-  showSchema: boolean
+interface ShchemaProps {
+  closeSchema: () => void;
 }
+
 /** JSON respresentation of buddy schema
- * 
- * @param showSceham - boolean
- * @returns 
  */
-export const Schema = ({showSchema}:SchemaProps): JSX.Element => {
+export const Schema = ({ closeSchema }: ShchemaProps): JSX.Element => {
   const buddy = useBuddy();
   return (
-    <>
-      {buddy?.buddy && showSchema && (
-        <div className="bg-glass rounded-lg">
-          <pre className="py-5 px-3 ml-5 max-h-[80vh] fancy-scrollbar overflow-x-auto overflow-y-auto text-white  drop-shadow-md text-sm rounded-xl ">
-            {JSON.stringify(buddy.buddy, null, 2)}
-          </pre>
-        </div>
+    <div className="bg-[#2E2F35] h-screen overflow-scroll no-scrollbar relative">
+      {buddy?.buddy && (
+        <pre className="py-5 px-3 ml-5  fancy-scrollbar overflow-x-auto overflow-y-auto text-white text-sm">
+          {JSON.stringify(buddy.buddy, null, 2)}
+        </pre>
       )}
-    </>
+      <CloseIcon
+        onClick={closeSchema}
+        className="cursor-pointer right-5 top-5 fixed"
+      />
+    </div>
   );
 };

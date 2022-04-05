@@ -1,24 +1,22 @@
-import React from "react";
+import React from 'react';
 interface OwnProps extends React.HTMLProps<HTMLInputElement> {
   labelText?: string;
 }
 
 export const Input = React.forwardRef(
   (
-    { labelText = "", placeholder = "", ...props }: OwnProps,
+    { labelText = '', placeholder = '', label, ...props }: OwnProps,
     ref: React.ForwardedRef<HTMLInputElement>
   ): JSX.Element => {
     return (
-      <div className={`${props.className} form-control py-1 my-2`}>
-        <label className='label'>
-          <span className='label-text text-white'>{labelText}</span>
-        </label>
+      <div className={`${props.className} form-control py-1`}>
+        <label className="label label-text text-white">{label}</label>
         <input
           ref={ref}
           {...props}
-          type='text'
+          type="text"
           placeholder={placeholder}
-          className='input input-bordered'
+          className="p-2 bg-input_bg outline-none text-light-400"
         />
       </div>
     );

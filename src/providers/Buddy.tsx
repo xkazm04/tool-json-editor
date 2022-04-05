@@ -3,7 +3,7 @@ import { BuddyBuilderType } from '../types';
 import { createCodeSnippet } from '../utils/createCodeSnippet';
 import { createUseCase } from '../utils/createUseCase';
 import { deepClone } from '../utils/deepClone';
-import { getSchemas } from '../utils/schemaAPI';
+import { getSchemas, saveSchema } from '../utils/schemaAPI';
 
 interface SchemaAttributes {
   Title: string;
@@ -52,6 +52,12 @@ interface BuddyContextType {
   schemas: Schema[];
   currentlyEditingSchema: number | null;
   setBuddy: React.Dispatch<React.SetStateAction<BuddyBuilderType | null>>;
+  currentlyEditing: BuddyBuilderType | null;
+  setCurrentlyEditing: React.Dispatch<
+    React.SetStateAction<BuddyBuilderType | null>
+  >;
+  activeSchemaName: string | null;
+  setActiveSchemaName: React.Dispatch<React.SetStateAction<string | null>>;
 
   addUseCaseOption: <T extends UseCaseType>(
     useCaseType: T,
@@ -66,6 +72,7 @@ interface BuddyContextType {
   notifications: NotificationType[];
   addNotification: (type: 'error' | 'success', message: string) => void;
   deleteNotifications: () => void;
+  loadSchemas: () => void;
 }
 
 export const BuddyContext = React.createContext<BuddyContextType | null>(null);
@@ -78,9 +85,14 @@ export const useBuddyContext = (): BuddyContextType => {
   const [currentlyEditingSchema, setCurrentlyEditingSchema] = useState<
     number | null
   >(null);
+  const [activeSchemaName, setActiveSchemaName] = useState<string | null>(null);
+
   const [notifications, setNotifications] = React.useState<
     NotificationType[] | []
   >([]);
+
+  const [currentlyEditing, setCurrentlyEditing] =
+    useState<BuddyBuilderType | null>(null);
 
   const addNotification = (type: NotificationType['type'], message: string) => {
     setNotifications((prev) => [...prev, { type, message }]);
@@ -90,11 +102,10 @@ export const useBuddyContext = (): BuddyContextType => {
     setNotifications([]);
   };
 
-  useEffect(() => {
+  const loadSchemas = () => {
     setLoadingSchema(true);
     getSchemas()
       .then((schema) => {
-        console.log('schema', schema.data);
         if (schema.data) {
           setSchemas(schema.data);
           return;
@@ -112,9 +123,15 @@ export const useBuddyContext = (): BuddyContextType => {
         }
       })
       .finally(() => setLoadingSchema(false));
+  };
+
+  useEffect(() => {
+    loadSchemas();
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, []);
 
   const setActiveSchema = (id: number) => {
+    currentlyEditingSchema !== id && setInputs([]);
     const activeSchema = schemas.find((schema) => schema.id === id);
     if (activeSchema) {
       setBuddy(activeSchema.attributes.tree);
@@ -123,6 +140,7 @@ export const useBuddyContext = (): BuddyContextType => {
   };
 
   const deleteUseCase = (id: string) => {
+    if (!id) return;
     let current = deepClone(buddy as BuddyBuilderType);
     const queue = [];
     queue.push(current);
@@ -133,33 +151,19 @@ export const useBuddyContext = (): BuddyContextType => {
       if (filtered?.length !== сurrentNode?.children.length) {
         (сurrentNode as any).children = filtered;
         setBuddy((prev) => ({ ...prev, ...current }));
+        saveSchema(
+          currentlyEditingSchema,
+          current,
+          () => addNotification('success', 'Schema has been updated'),
+          () => addNotification('error', 'Something went wrong')
+        );
         return;
       } else {
         сurrentNode?.children.forEach((child) => queue.push(child));
       }
     }
+    setBuddy(current);
   };
-
-  // const deleteUseCase = (id: string, buddy: BuddyBuilderType | null) => {
-  //   const deleteCase = (buddy: BuddyBuilderType | null) => {
-  //     if (!id || !buddy) return;
-  //     const current: any = buddy;
-
-  //     for (let [key, value] of Object.entries(current)) {
-  //       if (typeof key === "string") {
-  //         current[key as keyof BuddyBuilderType] = value;
-  //       }
-  //       if (Array.isArray(value)) {
-  //         current[key] = (value as BuddyBuilderType["children"])
-  //           .filter((v) => v.id !== id)
-  //           .map((v) => deleteCase(v));
-  //       }
-  //     }
-  //     return current;
-  //   };
-  //   const withoutDeletedUseCase = deleteCase(buddy);
-  //   setBuddy((prev) => ({ ...prev, ...withoutDeletedUseCase }));
-  // };
 
   const editUseCaseValue = (
     changingValue: Partial<EditingValues>,
@@ -199,10 +203,14 @@ export const useBuddyContext = (): BuddyContextType => {
       handlePreviousSelectChange(selectIndex, id);
       return;
     }
-    const useCase = findUseCase(id);
 
-    if (!useCase || useCase.useCaseType === 'code snippet') return;
-    setInputs((prev) => [...prev, useCase]);
+    const useCase = findUseCase(id);
+    if (!useCase) return;
+    if (useCase.children[0]?.useCaseType === 'code snippet') {
+      setCurrentlyEditing(useCase.children[0]);
+    } else {
+      setInputs((prev) => [...prev, useCase]);
+    }
   };
 
   const updateInputs = (inputs: BuddyBuilderType[]) => {
@@ -233,14 +241,13 @@ export const useBuddyContext = (): BuddyContextType => {
     let current = buddy;
     const queue = [];
     queue.push(current);
-
     while (queue.length > 0) {
       if (!current) return null;
       current = queue.shift() as BuddyBuilderType;
       if (current?.id === id) {
         searched = current;
       } else {
-        current.children.forEach((child) => queue.push(child));
+        current.children?.forEach((child) => queue.push(child));
       }
     }
     return searched;
@@ -281,7 +288,6 @@ export const useBuddyContext = (): BuddyContextType => {
     setBuddy(current);
     onFinish && onFinish();
   };
-
   useEffect(() => {
     if (!buddy) return;
     updateInputs(inputs);
@@ -303,6 +309,11 @@ export const useBuddyContext = (): BuddyContextType => {
     notifications,
     addNotification,
     deleteNotifications,
+    loadSchemas,
+    currentlyEditing,
+    setCurrentlyEditing,
+    setActiveSchemaName,
+    activeSchemaName,
   };
 };
 
