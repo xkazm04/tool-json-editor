@@ -103,10 +103,10 @@ export const Sidebar = (): JSX.Element => {
         {open && (
           <ul className="block overflow-scroll fancy-scrollbar flex-1 mt-5">
             <p className={`flex items-center`}>
-              <span className={`w-4 h-4 bg-[#562AD0] mr-2 `}></span>
+              <span className={`w-4 h-4 bg-[#562AD0] mr-2`}></span>
               <span>{buddy?.activeSchemaName}</span>
             </p>
-            <div className="ml-2">
+            <div className="pl-2">
               {buddy?.buddy?.children.map((child, index) => {
                 if (!buddy.buddy) return null;
                 const lastIndex = index === buddy?.buddy?.children.length - 1;
