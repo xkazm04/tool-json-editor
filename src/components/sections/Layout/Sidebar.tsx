@@ -5,6 +5,7 @@ import { useBuddy } from '../../../providers/Buddy';
 import { ReactComponent as ChvronRight } from '../../../assets/icons/chevron-right.svg';
 import { Input } from '../../baseComponents/Input';
 import { createUseCase } from '../../../utils/createUseCase';
+import { List } from '../../baseComponents/List';
 
 export const Sidebar = (): JSX.Element => {
   const buddy = useBuddy();
@@ -55,7 +56,7 @@ export const Sidebar = (): JSX.Element => {
           className={`h-8 w-8 ${open ? 'rotate-180' : 'rotate-0'} `}
         />
       </div>
-      <div className="sticky  h-screen top-0 pt-8 grid grid-rows-[10%_80%_10%]">
+      <div className="sticky  h-screen top-0 pt-8 flex flex-col">
         <div className="flex justify-center">
           <Logo />
         </div>
@@ -72,6 +73,7 @@ export const Sidebar = (): JSX.Element => {
                   id={JSON.stringify(id)}
                   onClick={() => {
                     buddy.setActiveSchema(id);
+                    buddy.setActiveSchemaName(attributes.Title);
                   }}
                 >
                   {attributes.Title}
@@ -98,6 +100,28 @@ export const Sidebar = (): JSX.Element => {
             </li>
           )}
         </ul>
+        {open && (
+          <ul className="block overflow-scroll fancy-scrollbar flex-1 mt-5">
+            <p className={`flex items-center`}>
+              <span className={`w-4 h-4 bg-[#562AD0] mr-2 `}></span>
+              <span>{buddy?.activeSchemaName}</span>
+            </p>
+            <div className="ml-2">
+              {buddy?.buddy?.children.map((child, index) => {
+                if (!buddy.buddy) return;
+                const lastIndex = index === buddy?.buddy?.children.length - 1;
+                return (
+                  <List
+                    lastIndex={lastIndex}
+                    key={index}
+                    title={child.value}
+                    children={child.children}
+                  />
+                );
+              })}
+            </div>
+          </ul>
+        )}
         <div
           onClick={() => setDarkMode(!darkMode)}
           className="flex items-center justify-center cursor-pointer"

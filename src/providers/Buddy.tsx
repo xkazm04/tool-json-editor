@@ -56,6 +56,8 @@ interface BuddyContextType {
   setCurrentlyEditing: React.Dispatch<
     React.SetStateAction<BuddyBuilderType | null>
   >;
+  activeSchemaName: string | null;
+  setActiveSchemaName: React.Dispatch<React.SetStateAction<string | null>>;
 
   addUseCaseOption: <T extends UseCaseType>(
     useCaseType: T,
@@ -83,6 +85,7 @@ export const useBuddyContext = (): BuddyContextType => {
   const [currentlyEditingSchema, setCurrentlyEditingSchema] = useState<
     number | null
   >(null);
+  const [activeSchemaName, setActiveSchemaName] = useState<string | null>(null);
 
   const [notifications, setNotifications] = React.useState<
     NotificationType[] | []
@@ -203,7 +206,7 @@ export const useBuddyContext = (): BuddyContextType => {
 
     const useCase = findUseCase(id);
     if (!useCase) return;
-    if (useCase.children[0].useCaseType === 'code snippet') {
+    if (useCase.children[0]?.useCaseType === 'code snippet') {
       setCurrentlyEditing(useCase.children[0]);
     } else {
       setInputs((prev) => [...prev, useCase]);
@@ -309,6 +312,8 @@ export const useBuddyContext = (): BuddyContextType => {
     loadSchemas,
     currentlyEditing,
     setCurrentlyEditing,
+    setActiveSchemaName,
+    activeSchemaName,
   };
 };
 
