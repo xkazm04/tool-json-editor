@@ -108,7 +108,7 @@ export const Sidebar = (): JSX.Element => {
             </p>
             <div className="ml-2">
               {buddy?.buddy?.children.map((child, index) => {
-                if (!buddy.buddy) return;
+                if (!buddy.buddy) return null;
                 const lastIndex = index === buddy?.buddy?.children.length - 1;
                 return (
                   <List

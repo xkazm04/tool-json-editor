@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Tree from 'react-d3-tree';
 import { RawNodeDatum, Point } from 'react-d3-tree/lib/types/common';
-import { useBuddy } from '../../providers/Buddy';
-import { BuddyBuilderType } from '../../types';
 
 interface OwnProps {
   d3Tree: RawNodeDatum | RawNodeDatum[] | undefined;
